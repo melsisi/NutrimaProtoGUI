@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="net.nutrima.nutrimaprotogui.LoginActivity">
+    <ScrollView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_weight="0.7">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context="net.nutrima.nutrimaproto.PersonalInfoActivity"
+            android:orientation="vertical">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:src="@drawable/the_logo"/>
+
+    <!--TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/signup_via_email"
+        android:paddingTop="100dp" /-->
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_gravity="center_horizontal"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/signup_with_facebook"
+                android:id="@+id/fb_button"
+                android:background="#3b5998"
+                android:layout_marginTop="30dp"
+                android:textColor="@android:color/white" />
+
+            <!--Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/signup_with_google"
+                android:id="@+id/googleplus_button"
+                android:background="#d34836"
+                android:layout_marginTop="30dp"
+                android:textColor="@android:color/white" /-->
+    <!--Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log on"
+        android:id="@+id/log_on_button"
+        android:layout_gravity="right" /-->
+
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Sneak Peak"
+            android:id="@+id/sneak_peak_button"
+            android:layout_weight="1"
+            style="@style/Base.Widget.AppCompat.ActionButton" />
+    </LinearLayout>
+</LinearLayout>

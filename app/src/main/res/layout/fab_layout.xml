@@ -1,0 +1,78 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/md_keylines"
+        app:srcCompat="@drawable/ic_check_stats"
+        android:visibility="invisible"
+        app:backgroundTint="@color/nutrimaBlue"
+        android:tint="@color/white"
+        app:fabSize="mini" />
+
+    <TextView
+        android:id="@+id/fab_1_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="Check stats"
+        android:elevation="7dp"
+        android:paddingRight="45dp"
+        android:paddingBottom="10dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/md_keylines"
+        app:srcCompat="@drawable/ic_log"
+        android:visibility="invisible"
+        app:backgroundTint="@color/nutrimaGreen"
+        android:tint="@color/white"
+        app:fabSize="mini" />
+    <TextView
+        android:id="@+id/fab_2_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="Log"
+        android:elevation="7dp"
+        android:paddingRight="45dp"
+        android:paddingBottom="10dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/md_keylines"
+        app:srcCompat="@drawable/ic_find"
+        android:visibility="invisible"
+        app:backgroundTint="@color/nutrimaYellow"
+        android:tint="@color/white"
+        app:fabSize="mini" />
+    <TextView
+        android:id="@+id/fab_3_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="Find"
+        android:elevation="7dp"
+        android:paddingRight="45dp"
+        android:paddingBottom="10dp"/>
+
+    <ImageView
+        android:id="@+id/tint_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:background="#ffffff"
+        android:visibility="invisible"/>
+</FrameLayout>

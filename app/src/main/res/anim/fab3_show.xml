@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="true">
+
+    <!-- Rotate -->
+    <!--rotate
+        android:duration="1000"
+        android:fromDegrees="0"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:toDegrees="30"></rotate-->
+
+    <!--Move-->
+    <translate
+        android:duration="500"
+        android:fromXDelta="250%"
+        android:fromYDelta="350%"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:toXDelta="0%"
+        android:toYDelta="0%"></translate>
+
+    <!--Fade In-->
+    <alpha
+        android:duration="500"
+        android:fromAlpha="0.0"
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:toAlpha="1.0"></alpha>
+
+</set>

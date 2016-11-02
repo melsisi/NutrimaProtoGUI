@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2016 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+    <string-array name="tiles">
+        <item>Map</item>
+        <item>Stats</item>
+        <item>List</item>
+        <item>Log</item>
+    </string-array>
+    <string-array name="card_desc">
+        <item>Nutrima is online!
+        </item>
+        <item>You need to start running.</item>
+    </string-array>
+    <string-array name="card_details">
+        <item>We\'re excited to announce the launch of Nutrima! The first intelligent fitness platform.
+            Now you\'re ready to Map your Nutrition!
+        </item>
+        <item>A recent study has found that running, over any other kind of sport shows unmatched results
+            to patients of Diabetes like yourself.
+        </item>
+    </string-array>
+    <string-array name="place_locations">
+        <item>8 Rue Scribe, 75009 Paris, France</item>
+        <item>Piazza del Capitolo - 50122 Florence</item>
+        <item>New York City</item>
+        <item>2-3-1 Asakusa, Taitō-ku, Tokyo, Japan</item>
+        <item>At Meydanı No:7, 34122 Fatih/İstanbul, Turkey</item>
+        <item>Cape Town, South Africa</item>
+    </string-array>
+    <array name="place_avator">
+        <item>@drawable/a_avator</item>
+    </array>
+    <array name="cards_picture">
+        <item>@drawable/nutrima_full_logo</item>
+        <item>@drawable/running_girl</item>
+    </array>
+
+</resources>

@@ -97,8 +97,19 @@ public class FindHeavyOperations implements GoogleApiClient.ConnectionCallbacks,
                     MY_PERMISSIONS_REQUEST);
             return;
         }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+
+
+        /*
+        When running in emulator, use home location by default
+         */
+
+        if(Globals.getInstance().amIRunningInEmulator()) {
+            mLastLocation = new Location("HOME_ADDRESS");
+            mLastLocation.setLatitude(33.7131339d);//your coords of course
+            mLastLocation.setLongitude(-117.7853251d);
+        }
+        else
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         Geocoder gcd = new Geocoder(activity, Locale.getDefault());
         try {

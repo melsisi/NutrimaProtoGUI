@@ -39,10 +39,20 @@ import com.facebook.login.LoginManager;
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.UserProfile;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -133,7 +143,10 @@ public class MainActivity extends AppCompatActivity {
                         // Set item in checked state
                         menuItem.setChecked(true);
 
-                        if(menuItem.getTitle().equals("My profile")) {
+                        if(menuItem.getTitle().equals("Dashboard")) {
+                            setupViewPager("main");
+                        }
+                        else if(menuItem.getTitle().equals("My profile")) {
                             Intent activityChangeIntent = new Intent(MainActivity.this,
                                     PersonalInfoActivity.class);
                             startActivity(activityChangeIntent);
@@ -194,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        populateLocalAWSRestaurantList();
     }
 
     @Override
@@ -458,5 +472,46 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void populateLocalAWSRestaurantList() {
+        ArrayList<String> list = new ArrayList<>();
+
+        InputStream file = null;
+        try {
+            file = getResources().openRawResource(getResources().getIdentifier("aws_restaurant_names",
+                    "raw", getPackageName()));
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(file));
+            //Create Workbook instance holding reference to .xlsx file
+            HSSFWorkbook workbook = new HSSFWorkbook(file);
+
+            //Get first/desired sheet from the workbook
+            HSSFSheet sheet = workbook.getSheetAt(0);
+
+            //Iterate through each rows one by one
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            // Skip first two rows
+            rowIterator.next();
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                //For each row, iterate through all the columns
+                Iterator<Cell> cellIterator = row.cellIterator();
+
+                if(cellIterator.hasNext())
+                    list.add(cellIterator.next().getStringCellValue());
+                else
+                    break;
+            }
+            file.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Globals.getInstance().setAWSRestaurants(list);
     }
 }

@@ -17,7 +17,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -29,23 +28,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".MainActivity"/>
-
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".BusinessDetailsActivity"
             android:label="@string/title_activity_business_details"
-            android:parentActivityName=".MainActivity">
-        </activity>
-
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".PersonalInfoActivity"
             android:label="@string/title_activity_personal_info"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".LoginDetailsActivity"
+            android:label="@string/title_activity_login_details" />
+        <activity android:name=".ProfileCreatorActivity"></activity>
 
-        <activity android:name=".LoginDetailsActivity"
-            android:label="@string/title_activity_login_details"/>
     </application>
 
 </manifest>

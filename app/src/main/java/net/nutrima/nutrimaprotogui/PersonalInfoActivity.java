@@ -41,7 +41,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         // Populate age spinner //////////////////////////////////////////
         String[] age_array = new String[91];
-        age_array[0] = "Select one";
+        age_array[0] = "Select age";
         for(int i = 1; i < 91; i++)
             age_array[i] = Integer.toString(i + 10);
         Spinner spinner = (Spinner) findViewById(R.id.age_spinner);
@@ -97,7 +97,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 break;
         }
         if(!((Spinner) findViewById(R.id.age_spinner))
-                .getSelectedItem().toString().equals("Select one"))
+                .getSelectedItem().toString().equals("Select age"))
             userProfile.setAge(Integer.parseInt(
                     ((Spinner) findViewById(R.id.age_spinner)).getSelectedItem().toString()));
         if(!isEmpty(((EditText) findViewById(R.id.height_editText))))

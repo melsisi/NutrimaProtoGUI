@@ -148,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else if(menuItem.getTitle().equals("My profile")) {
                             Intent activityChangeIntent = new Intent(MainActivity.this,
-                                    PersonalInfoActivity.class);
+                                    ProfileCreatorActivity.class);
+                                    //PersonalInfoActivity.class);
                             startActivity(activityChangeIntent);
                         }
                         else if(menuItem.getTitle().equals("Log out")) {
@@ -228,7 +229,8 @@ public class MainActivity extends AppCompatActivity {
             builder.setPositiveButton("Add now", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Intent activityChangeIntent = new Intent(MainActivity.this,
-                            PersonalInfoActivity.class);
+                            ProfileCreatorActivity.class);
+                            //PersonalInfoActivity.class);
                     startActivity(activityChangeIntent);
                 }
             });

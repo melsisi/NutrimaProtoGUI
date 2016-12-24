@@ -189,8 +189,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 }
                 Globals.getInstance().setMenusReady(true);
 
-                // TODO: Filter through Engine
-
                 MealNutrients mn = new MealNutrients(Globals.getInstance().getNutrimaMetrics(),
                         new CurrentMetrics(),
                         Globals.getInstance().getUserProfile());
@@ -224,7 +222,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         // Animate camera to current position
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),
                 mLastLocation.getLongitude()), 13.0f));
-
     }
 
     private void filterFromEngine(MealNutrients mn) {
@@ -238,6 +235,11 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         menuItem.getTotalFat() == null || menuItem.getProtein() == null ||
                         menuItem.getSaturatedFat() == null || menuItem.getFiber() == null ||
                         menuItem.getSugar() == null)
+                    continue;
+                if(!tryParseInt(menuItem.getCalories()) || !tryParseInt(menuItem.getCarbohydrates()) ||
+                        !tryParseInt(menuItem.getTotalFat()) || !tryParseInt(menuItem.getProtein()) ||
+                        !tryParseInt(menuItem.getSaturatedFat()) || !tryParseInt(menuItem.getFiber()) ||
+                        !tryParseInt(menuItem.getSugar()))
                     continue;
                 if((Integer.parseInt(menuItem.getCalories()) >= mn.calories.min &&
                         Integer.parseInt(menuItem.getCalories()) <= mn.calories.max) &&
@@ -264,12 +266,15 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     private boolean businessNameAbscent(String name) {
+        boolean absent = true;
         for(String s : Globals.getInstance().getAWSRestaurants()) {
-            if(s.contains(name.toLowerCase()) || name.toLowerCase().contains(s)) {
-                return false;
+            if(s.toLowerCase().contains(name.toLowerCase()) ||
+                    name.toLowerCase().contains(s.toLowerCase())) {
+                absent = false;
+                break;
             }
         }
-        return true;
+        return absent;
     }
 
     @Override
@@ -352,5 +357,14 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
 
         return true;
+    }
+
+    boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

@@ -1,0 +1,231 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="net.nutrima.nutrimaprotogui.ProfileMeasurementsFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:src="@drawable/running_girl"
+                    android:scaleType="center"
+                    android:id="@+id/top_imageView"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Basic info"
+                    android:fontFamily="sans-serif-thin"
+                    android:textSize="70dp"
+                    android:textColor="@color/white"
+                    android:layout_gravity="bottom"/>
+            </FrameLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="This is a set of required info that we need to learn about you."
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"/>
+
+        <View
+            android:layout_width="200dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Units: "
+                android:layout_weight="0.2"
+                android:layout_gravity="center_vertical" />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="0.4"
+                android:id="@+id/units_radioButton">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/metric_radioButton"
+                    android:text="metric" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imperial_radioButton"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="end"
+                    android:text="imperial"
+                    android:checked="true"/>
+            </RadioGroup>
+        </LinearLayout>
+
+
+
+    <!--Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/gender_spinner"
+        android:layout_gravity="center_horizontal"
+        android:entries="@array/gender_array"/-->
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:weightSum="1"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp">
+
+            <EditText
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/height1_editText"
+                android:hint="height (ft)"
+                android:inputType="numberDecimal"
+                android:layout_weight="0.5" />
+
+            <EditText
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/height2_editText"
+                android:hint="height (in)"
+                android:inputType="numberDecimal"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:weightSum="1"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp">
+
+            <EditText
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/weight_editText"
+                android:hint="weight (lb)"
+                android:inputType="numberDecimal"
+                android:layout_weight="0.5"/>
+
+            <Spinner
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:id="@+id/age_spinner"
+                android:layout_marginTop="10dp"
+                android:layout_weight="0.5"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:id="@+id/gender_textView"
+                android:gravity="center_horizontal"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:src="@drawable/female_logo"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/gender_textView"
+                android:layout_marginStart="30dp"
+                android:id="@+id/gender_female_imageView"/>
+
+            <ImageView
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:src="@drawable/male_logo"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/gender_textView"
+                android:layout_marginEnd="30dp"
+                android:id="@+id/gender_male_imageView" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp"
+            android:weightSum="1"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp" >
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text="What's your ultimate weight goal?"
+                android:textAlignment="center"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/weight_goal_spinner"
+                android:layout_gravity="center_horizontal"
+                android:entries="@array/weight_goal_array"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next"
+                style="@style/Base.Widget.AppCompat.ActionButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="20dp"
+                android:id="@+id/next_button"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,188 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="net.nutrima.nutrimaprotogui.ProfileMeasurementsDetailsFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:src="@drawable/measurments_pink"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/top_imageView"
+                    android:adjustViewBounds="false"
+                    android:cropToPadding="false" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Measurements"
+                    android:fontFamily="sans-serif-thin"
+                    android:layout_gravity="bottom"
+                    android:textSize="50dp"
+                    android:textColor="@color/white"/>
+            </FrameLayout>
+        </RelativeLayout>
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="Give us as much data as possible. The more we learn about you, the better you're experience will be."
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"/>
+
+        <View
+            android:layout_width="200dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp" >
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="waist (in)"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/waist_editText"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="hips (in)"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/hips_editText"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="wrist (in)"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/wrist_editText"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="thigh (in)"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/thigh_editText"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp" >
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="forearm (in)"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/forearm_editText"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="neck (in)"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/neck_editText"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="calf (in)"
+                android:inputType="numberDecimal"
+                android:id="@+id/calf_editText"/>
+        </LinearLayout>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Closest body shape:"
+            android:textSize="12dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp" >
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="140dp"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/body_type_endo"
+                    android:id="@+id/endo_radioButton"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/body_type_meso"
+                    android:id="@+id/meso_radioButton"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/body_type_ecto"
+                    android:id="@+id/ecto_radioButton"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next"
+                style="@style/Base.Widget.AppCompat.ActionButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/next_button"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="20dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                style="@style/Base.Widget.AppCompat.ActionButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/back_button"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="20dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</FrameLayout>

@@ -16,9 +16,7 @@
 
     <string name="identity_pool">us-east-1:6ee03d7d-72c9-40e5-bf69-282319705efe</string>
     <string name="restaurant_us_table">RestaurantsUS2</string>
-    <string name="google_maps_key"
-        templateMergeStrategy="preserve"
-        translatable="false">AIzaSyCerOK2080yjtPDEGVHV_9MnJaFCE4iPLQ</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCerOK2080yjtPDEGVHV_9MnJaFCE4iPLQ</string>
 
     <string name="signup_with_facebook">Signup with Facebook</string>
     <string name="signup_with_google">Signup with Google+</string>
@@ -54,13 +52,32 @@
         <item>8</item>
     </string-array>
 
-    <string-array name="activity_level_array">
+    <!--string-array name="activity_level_array">
         <item>Select one</item>
         <item>Sedentary</item>
         <item>Light activity</item>
         <item>Moderate activity</item>
         <item>High activity</item>
         <item>Very high activity</item>
+    </string-array-->
+
+    <string-array name="activity_level_array">
+        <item>Select one</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string-array name="typical_day_array">
+        <item>Select one</item>
+        <item>At office</item>
+        <item>On foot</item>
+        <item>Manual labor</item>
+        <item>Stay at home</item>
     </string-array>
 
     <string-array name="weight_goal_array">
@@ -152,5 +169,8 @@
     <string name="title_activity_login_details">Sign in</string>
 
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

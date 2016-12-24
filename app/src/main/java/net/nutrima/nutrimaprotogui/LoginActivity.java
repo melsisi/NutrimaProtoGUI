@@ -93,7 +93,7 @@ public class LoginActivity extends Activity {
 
         // Instantiate AWS client manager ////////////////////////////////
         Globals.getInstance().setClientManager(new AmazonClientManager(this));
-        String restaurantName = "Red Robin";
+        /*String restaurantName = "Red Robin";
         List<RestaurantMenuItem> tempRawMenuItem;
         try {
             tempRawMenuItem = new DynamoDBManagerTask().
@@ -102,7 +102,7 @@ public class LoginActivity extends Activity {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
+        }*/
         //////////////////////////////////////////////////////////////////
 
         //If access token is already here, set fb session and proceed to application

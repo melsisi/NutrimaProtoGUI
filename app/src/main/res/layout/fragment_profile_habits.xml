@@ -1,0 +1,152 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="net.nutrima.nutrimaprotogui.ProfileHabitsFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:src="@drawable/habits"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/top_imageView"
+                    android:adjustViewBounds="false"
+                    android:cropToPadding="false" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Daily habits"
+                    android:fontFamily="sans-serif-thin"
+                    android:layout_gravity="bottom"
+                    android:textSize="50dp"
+                    android:textColor="@color/white"/>
+            </FrameLayout>
+        </RelativeLayout>
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="Done with measurements! Now we need to learn how your typical day looks like."
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"/>
+
+        <View
+            android:layout_width="200dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:weightSum="1"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp" >
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text="How many meals do you usually have each day (including snacks)?"
+                android:textAlignment="center"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/num_meals_spinner"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:entries="@array/num_meals_array"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp"
+            android:weightSum="1"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp" >
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text="How many times do you exercise for more than 30 minutes each week?"
+                android:textAlignment="center"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/activity_level_spinner"
+                android:layout_gravity="center_horizontal"
+                android:entries="@array/activity_level_array"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp"
+            android:weightSum="1"
+            android:gravity="center_horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp" >
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text="How do you spend a normal day at work?"
+                android:textAlignment="center"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/typical_day_spinner"
+                android:layout_gravity="center_horizontal"
+                android:entries="@array/typical_day_array"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next"
+                android:id="@+id/next_button"
+                style="@style/Base.Widget.AppCompat.ActionButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="20dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:id="@+id/back_button"
+                style="@style/Base.Widget.AppCompat.ActionButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="20dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</FrameLayout>

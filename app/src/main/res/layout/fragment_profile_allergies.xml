@@ -1,0 +1,158 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="net.nutrima.nutrimaprotogui.ProfileAllergiesFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:src="@drawable/allergies"
+                        android:scaleType="centerCrop"
+                        android:id="@+id/top_imageView"
+                        android:adjustViewBounds="false"
+                        android:cropToPadding="false" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Allergies"
+                        android:fontFamily="sans-serif-thin"
+                        android:layout_gravity="bottom"
+                        android:textSize="55dp"
+                        android:textColor="@color/white"/>
+                </FrameLayout>
+            </RelativeLayout>
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text="We're almost done! Please check any of the following illnesses you suffer from."
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"/>
+
+            <View
+                android:layout_width="200dp"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:weightSum="1"
+                android:gravity="start"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp" >
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Celiac/Gluten Allergy"
+                    android:id="@+id/celiac_gluten_allergy_checkBox" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dairy Allergy"
+                    android:id="@+id/dairy_allergy_checkBox" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Egg Allergy"
+                    android:id="@+id/egg_allergy_checkBox" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fish Allergy"
+                    android:id="@+id/fish_allergy_checkBox" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shellfish Allergy"
+                    android:id="@+id/shellfish_allergy_checkBox" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Soybeans Allergy"
+                    android:id="@+id/soybeans_allergy_checkBox" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nuts Allergy"
+                    android:id="@+id/nuts_allergy_checkBox" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Peanuts Allergy"
+                    android:id="@+id/peanuts_allergy_checkBox" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Other - please specify below"
+                    android:id="@+id/other_allergy_checkBox" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/other_allergy_editText"
+                    android:hint="other allergies"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:id="@+id/done_button"
+                    style="@style/Base.Widget.AppCompat.ActionButton"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:fontFamily="sans-serif-thin"
+                    android:textSize="20dp"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:id="@+id/back_button"
+                    style="@style/Base.Widget.AppCompat.ActionButton"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:fontFamily="sans-serif-thin"
+                    android:textSize="20dp"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

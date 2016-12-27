@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import net.nutrima.engine.UserProfile;
@@ -39,7 +40,20 @@ public class ProfileAllergiesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_profile_allergies, container, false);
         handleNextButton(rootView);
         handleBackButton(rootView);
+        handleOtherTextBox(rootView);
         return rootView;
+    }
+
+    private void handleOtherTextBox(View rootView) {
+        final EditText otherAllergiesEditText = (EditText) rootView.findViewById(R.id.other_allergy_editText);
+        CheckBox otherAllergiesCheckBox = (CheckBox) rootView.findViewById(R.id.other_allergy_checkBox);
+        otherAllergiesCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                otherAllergiesEditText.setEnabled(isChecked);
+            }
+        });
     }
 
     private void handleNextButton(final View rootView) {

@@ -114,7 +114,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/other_illness_editText"
-                android:hint="other illnesses"/>
+                android:hint="other illnesses"
+                android:enabled="false"/>
         </LinearLayout>
 
         <RelativeLayout

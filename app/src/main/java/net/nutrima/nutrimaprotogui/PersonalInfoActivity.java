@@ -242,7 +242,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         UserProfile userProfile = null;
 
         try {
-            FileInputStream fis = openFileInput("TEST1");
+            FileInputStream fis = openFileInput(getString(R.string.profile_data_file_name));
             ObjectInputStream is = null;
 
             is = new ObjectInputStream(fis);
@@ -266,7 +266,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private void saveDataToStorage(UserProfile dataToSave) {
         FileOutputStream fos = null;
         try {
-            fos = openFileOutput("TEST1", Context.MODE_PRIVATE);
+            fos = openFileOutput(getString(R.string.profile_data_file_name), Context.MODE_PRIVATE);
 
             ObjectOutputStream os = new ObjectOutputStream(fos);
             os.writeObject(dataToSave);

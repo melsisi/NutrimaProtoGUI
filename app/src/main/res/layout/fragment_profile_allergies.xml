@@ -122,7 +122,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/other_allergy_editText"
-                    android:hint="other allergies"/>
+                    android:hint="other allergies"
+                    android:enabled="false"/>
             </LinearLayout>
 
             <RelativeLayout

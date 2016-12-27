@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
         UserProfile userProfile = null;
 
         try {
-            FileInputStream fis = openFileInput("TEST1");
+            FileInputStream fis = openFileInput(getString(R.string.profile_data_file_name));
             ObjectInputStream is = null;
 
             is = new ObjectInputStream(fis);

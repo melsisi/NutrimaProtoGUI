@@ -1,5 +1,6 @@
 package net.nutrima.nutrimaprotogui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,6 +8,14 @@ import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+
+import net.nutrima.engine.NutrimaMetrics;
+import net.nutrima.engine.UserProfile;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class ProfileCreatorActivity extends FragmentActivity
         implements ProfileMeasurementsFragment.OnNextClickedListener,
@@ -79,7 +88,10 @@ public class ProfileCreatorActivity extends FragmentActivity
 
         }
         else if(currentPosition == 5) {
-            // TODO: Save profile
+            NutrimaMetrics nutrimaMetrics = new NutrimaMetrics();
+            nutrimaMetrics.calcNutrima(Globals.getInstance().getUserProfile());
+            Globals.getInstance().setNutrimaMetrics(nutrimaMetrics);
+            saveDataToStorage(Globals.getInstance().getUserProfile());
             new Handler().postDelayed(new Runnable(){
                 @Override
                 public void run() {
@@ -96,4 +108,22 @@ public class ProfileCreatorActivity extends FragmentActivity
             transaction.commit();
         }
     }
+
+    // TODO: Save to cloud
+    private void saveDataToStorage(UserProfile dataToSave) {
+        FileOutputStream fos = null;
+        try {
+            fos = openFileOutput("TEST1", Context.MODE_PRIVATE);
+
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.writeObject(dataToSave);
+            os.close();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

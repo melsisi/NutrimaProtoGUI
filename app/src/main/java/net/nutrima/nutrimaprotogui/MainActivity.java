@@ -148,8 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else if(menuItem.getTitle().equals("My profile")) {
                             Intent activityChangeIntent = new Intent(MainActivity.this,
-                                    ProfileCreatorActivity.class);
-                                    //PersonalInfoActivity.class);
+                                    PersonalInfoActivity.class);
                             startActivity(activityChangeIntent);
                         }
                         else if(menuItem.getTitle().equals("Log out")) {
@@ -249,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
         UserProfile userProfile = null;
 
         try {
-            FileInputStream fis = openFileInput("TEST");
+            FileInputStream fis = openFileInput("TEST1");
             ObjectInputStream is = null;
 
             is = new ObjectInputStream(fis);

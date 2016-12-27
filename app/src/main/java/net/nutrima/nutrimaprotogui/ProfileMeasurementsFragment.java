@@ -26,7 +26,7 @@ import net.nutrima.engine.WeightGoal;
 
 public class ProfileMeasurementsFragment extends Fragment {
 
-    MetricStandard metricStandard = MetricStandard.METRIC;
+    MetricStandard metricStandard = MetricStandard.IMPERIAL;
     Boolean isUserMale = null;
 
     public ProfileMeasurementsFragment() { }
@@ -124,7 +124,6 @@ public class ProfileMeasurementsFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Add handlers
                 collectDataFromUI(rootView);
             }
         });

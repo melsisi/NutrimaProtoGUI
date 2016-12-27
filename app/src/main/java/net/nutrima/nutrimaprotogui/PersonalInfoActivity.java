@@ -235,12 +235,14 @@ public class PersonalInfoActivity extends AppCompatActivity {
         return myeditText.getText().toString().trim().length() == 0;
     }
 
+    // TODO: Write to and read from cloud
+
     @Nullable
     public UserProfile readDataFromFile() {
         UserProfile userProfile = null;
 
         try {
-            FileInputStream fis = openFileInput("TEST");
+            FileInputStream fis = openFileInput("TEST1");
             ObjectInputStream is = null;
 
             is = new ObjectInputStream(fis);
@@ -264,7 +266,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private void saveDataToStorage(UserProfile dataToSave) {
         FileOutputStream fos = null;
         try {
-            fos = openFileOutput("TEST", Context.MODE_PRIVATE);
+            fos = openFileOutput("TEST1", Context.MODE_PRIVATE);
 
             ObjectOutputStream os = new ObjectOutputStream(fos);
             os.writeObject(dataToSave);

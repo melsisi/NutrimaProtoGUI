@@ -1,9 +1,20 @@
 package net.nutrima.nutrimaprotogui;
 
+import android.app.Activity;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 
 import net.nutrima.aws.AmazonClientManager;
 import net.nutrima.aws.RestaurantMenuItem;
+import net.nutrima.engine.ActivityLevel;
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.UserProfile;
 
@@ -23,7 +34,7 @@ public class Globals {
     private static AmazonClientManager clientManager;
     private static Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMap;
     private static Map<Business, List<RestaurantMenuItem>> restaurantPersonalizedMenuMap;
-    private static boolean menusReady;
+    private static boolean isMenusReady;
     private static List<String> AWSRestaurants;
 
     public static Globals getInstance() {
@@ -37,7 +48,7 @@ public class Globals {
         USDATable = new ArrayList<NutritionUSDAEntry>();
         nutrimaMetrics = new NutrimaMetrics();
         restaurantFullMenuMap = new HashMap<>();
-        menusReady = false;
+        isMenusReady = false;
         AWSRestaurants = new ArrayList<>();
     }
 
@@ -74,11 +85,11 @@ public class Globals {
     }
 
     public boolean isMenusReady() {
-        return menusReady;
+        return isMenusReady;
     }
 
     public void setMenusReady(boolean menusReady) {
-        Globals.menusReady = menusReady;
+        Globals.isMenusReady = menusReady;
     }
 
     public List<String> getAWSRestaurants() {

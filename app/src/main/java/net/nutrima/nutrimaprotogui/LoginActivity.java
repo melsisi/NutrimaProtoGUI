@@ -112,7 +112,7 @@ public class LoginActivity extends Activity {
             //--x--setFacebookSession(fbAccessToken);
             new CognitoInternetAccess(fbAccessToken).execute();
             //btnLoginFacebook.setVisibility(View.GONE);
-            Intent activityChangeIntent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
             startActivity(activityChangeIntent);
             finish();
         }
@@ -134,7 +134,7 @@ public class LoginActivity extends Activity {
                         btnLoginFacebook.setVisibility(View.INVISIBLE);
                         new GetFbName(loginResult).execute();
                         //setFacebookSession(loginResult.getAccessToken());
-                        Intent activityChangeIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
                         startActivity(activityChangeIntent);
                         finish();
                     }
@@ -163,7 +163,7 @@ public class LoginActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 new CognitoInternetAccess(null).execute();
-                Intent activityChangeIntent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
                 startActivity(activityChangeIntent);
             }
         });

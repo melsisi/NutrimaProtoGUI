@@ -2,6 +2,7 @@ package net.nutrima.nutrimaprotogui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -20,8 +21,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,12 +30,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.UserProfile;
@@ -55,37 +59,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class SimpleMainActivity extends AppCompatActivity {
 
-    private boolean mainFabPressed = false;
     private ViewPager viewPager;
     private TabLayout tabs;
     private Adapter adapter;
 
-    private FloatingActionButton mainFab;
     private FloatingActionButton logSaveFab;
     private boolean showLogAdd;
-
-    private ViewGroup.LayoutParams layoutParams;
-
-    private ViewGroup.LayoutParams originalLayoutParams;
-
-    //Animations
-    Animation show_fab_1;
-    Animation hide_fab_1;
-
-    Animation show_fab_2;
-    Animation hide_fab_2;
-
-    Animation show_fab_3;
-    Animation hide_fab_3;
-
     private DrawerLayout mDrawerLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_simple_main);
+
+        //FindHeavyOperations.getInstance().buildGoogleApiClient(this);
 
         Intent intent = this.getIntent();
         String fromPage = intent.getStringExtra("FROM");
@@ -93,15 +82,6 @@ public class MainActivity extends AppCompatActivity {
             Snackbar.make(findViewById(android.R.id.content), "Profile saved!", Snackbar.LENGTH_LONG)
                     .show();
         }
-
-        show_fab_1 = AnimationUtils.loadAnimation(getApplication(), R.anim.fab1_show);
-        hide_fab_1 = AnimationUtils.loadAnimation(getApplication(), R.anim.fab1_hide);
-
-        show_fab_2 = AnimationUtils.loadAnimation(getApplication(), R.anim.fab2_show);
-        hide_fab_2 = AnimationUtils.loadAnimation(getApplication(), R.anim.fab2_hide);
-
-        show_fab_3 = AnimationUtils.loadAnimation(getApplication(), R.anim.fab3_show);
-        hide_fab_3 = AnimationUtils.loadAnimation(getApplication(), R.anim.fab3_hide);
 
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -113,9 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Setting ViewPager for each Tabs
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        originalLayoutParams = viewPager.getLayoutParams();
-        layoutParams = viewPager.getLayoutParams();
-        setupViewPager("main");
+
+        setupViewPager("find");
         viewPager.setAdapter(adapter);
 
         // Set Tabs inside Toolbar
@@ -147,14 +126,14 @@ public class MainActivity extends AppCompatActivity {
                             setupViewPager("main");
                         }
                         else if(menuItem.getTitle().equals("My profile")) {
-                            Intent activityChangeIntent = new Intent(MainActivity.this,
+                            Intent activityChangeIntent = new Intent(SimpleMainActivity.this,
                                     PersonalInfoActivity.class);
                             startActivity(activityChangeIntent);
                         }
                         else if(menuItem.getTitle().equals("Log out")) {
                             LoginManager.getInstance().logOut(); //Log out from Facebook
                             CognitoSyncClientManager.clear();
-                            Intent activityChangeIntent = new Intent(MainActivity.this, MainActivity.class);
+                            Intent activityChangeIntent = new Intent(SimpleMainActivity.this, SimpleMainActivity.class);
                             startActivity(activityChangeIntent);
                             finish();
                         }
@@ -164,40 +143,6 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
-
-        // Adding Floating Action Button to bottom right of main view
-        mainFab = (FloatingActionButton) findViewById(R.id.fab);
-        mainFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!mainFabPressed) {
-                    showFabs();
-                }
-                else {
-                    hideFabs();
-                }
-            }
-        });
-
-        // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton findFab = (FloatingActionButton) findViewById(R.id.fab_3);
-        findFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideFabs();
-                setupViewPager("find");
-            }
-        });
-
-        // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton logFab = (FloatingActionButton) findViewById(R.id.fab_2);
-        logFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideFabs();
-                setupViewPager("log");
-            }
-        });
 
         logSaveFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         // Populate info from file ///////////////////////////////////////
@@ -224,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
             builder.setPositiveButton("Add now", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Intent activityChangeIntent = new Intent(MainActivity.this,
+                    Intent activityChangeIntent = new Intent(SimpleMainActivity.this,
                             ProfileCreatorActivity.class);
                             //PersonalInfoActivity.class);
                     startActivity(activityChangeIntent);
@@ -268,19 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Add Fragments to Tabs
     private void setupViewPager(String page) {
-        if(page.equals("main")) {
-            if(mainFab!= null)
-                mainFab.setVisibility(View.VISIBLE);
-            viewPager.setLayoutParams(originalLayoutParams);
-            logSaveFab.setVisibility(View.INVISIBLE);
-            adapter.removeAll();
-            adapter.addFragment(new CardContentFragment(), "Your Feed");
-            adapter.notifyDataSetChanged();
-            showLogAdd = false;
-            invalidateOptionsMenu();
-        }
-        else if(page.equals("find")) {
-            mainFab.setVisibility(View.INVISIBLE);
+        if(page.equals("find")) {
             CoordinatorLayout.LayoutParams layoutParams =
                     new CoordinatorLayout.LayoutParams(viewPager.getLayoutParams().width,
                             viewPager.getLayoutParams().height);
@@ -292,16 +225,6 @@ public class MainActivity extends AppCompatActivity {
             adapter.addFragment(new ListContentFragment(), "NutriList");
             adapter.notifyDataSetChanged();
             showLogAdd = false;
-            invalidateOptionsMenu();
-        }
-        else if(page.equals("log")) {
-            mainFab.setVisibility(View.INVISIBLE);
-            viewPager.setLayoutParams(originalLayoutParams);
-            logSaveFab.setVisibility(View.VISIBLE);
-            adapter.removeAll();
-            adapter.addFragment(new LogFragment(), "Log");
-            adapter.notifyDataSetChanged();
-            showLogAdd = true;
             invalidateOptionsMenu();
         }
     }
@@ -355,91 +278,6 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
-    }
-
-    private void showFabs() {
-        mainFabPressed = !mainFabPressed;
-        FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab_1);
-        FrameLayout.LayoutParams layoutParams1 = (FrameLayout.LayoutParams) fab1.getLayoutParams();
-        TextView fab1Text = (TextView) findViewById(R.id.fab_1_text);
-
-        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab_2);
-        FrameLayout.LayoutParams layoutParams2 = (FrameLayout.LayoutParams) fab2.getLayoutParams();
-        TextView fab2Text = (TextView) findViewById(R.id.fab_2_text);
-
-        FloatingActionButton fab3 = (FloatingActionButton) findViewById(R.id.fab_3);
-        FrameLayout.LayoutParams layoutParams3 = (FrameLayout.LayoutParams) fab3.getLayoutParams();
-        TextView fab3Text = (TextView) findViewById(R.id.fab_3_text);
-
-        ImageView tintImage = (ImageView) findViewById(R.id.tint_image);
-        layoutParams1.rightMargin += (int) (fab1.getWidth() * 1.5);
-        layoutParams1.bottomMargin += (int) (fab1.getHeight() * 1.5);
-        fab1.setLayoutParams(layoutParams1);
-        fab1.startAnimation(show_fab_1);
-        fab1.setClickable(true);
-        fab1Text.startAnimation(show_fab_1);
-        fab1Text.setLayoutParams(layoutParams1);
-
-        layoutParams2.rightMargin += (int) (fab2.getWidth() * 2.5);
-        layoutParams2.bottomMargin += (int) (fab2.getHeight() * 2.5);
-        fab2.setLayoutParams(layoutParams2);
-        fab2.startAnimation(show_fab_2);
-        fab2.setClickable(true);
-        fab2Text.startAnimation(show_fab_2);
-        fab2Text.setLayoutParams(layoutParams2);
-
-        layoutParams3.rightMargin += (int) (fab3.getWidth() * 3.5);
-        layoutParams3.bottomMargin += (int) (fab3.getHeight() * 3.5);
-        fab3.setLayoutParams(layoutParams3);
-        fab3.startAnimation(show_fab_3);
-        fab3.setClickable(true);
-        fab3Text.startAnimation(show_fab_3);
-        fab3Text.setLayoutParams(layoutParams3);
-
-        tintImage.setVisibility(View.VISIBLE);
-    }
-
-    private void hideFabs() {
-        mainFabPressed = !mainFabPressed;
-        FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab_1);
-        FrameLayout.LayoutParams layoutParams1 = (FrameLayout.LayoutParams) fab1.getLayoutParams();
-        TextView fab1Text = (TextView) findViewById(R.id.fab_1_text);
-
-        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab_2);
-        FrameLayout.LayoutParams layoutParams2 = (FrameLayout.LayoutParams) fab2.getLayoutParams();
-        TextView fab2Text = (TextView) findViewById(R.id.fab_2_text);
-
-        FloatingActionButton fab3 = (FloatingActionButton) findViewById(R.id.fab_3);
-        FrameLayout.LayoutParams layoutParams3 = (FrameLayout.LayoutParams) fab3.getLayoutParams();
-        TextView fab3Text = (TextView) findViewById(R.id.fab_3_text);
-
-        ImageView tintImage = (ImageView) findViewById(R.id.tint_image);
-
-        layoutParams1.rightMargin -= (int) (fab1.getWidth() * 1.5);
-        layoutParams1.bottomMargin -= (int) (fab1.getHeight() * 1.5);
-        fab1.setLayoutParams(layoutParams1);
-        fab1.startAnimation(hide_fab_1);
-        fab1.setClickable(false);
-        fab1Text.startAnimation(hide_fab_1);
-        fab1Text.setLayoutParams(layoutParams1);
-
-        layoutParams2.rightMargin -= (int) (fab2.getWidth() * 2.5);
-        layoutParams2.bottomMargin -= (int) (fab2.getHeight() * 2.5);
-        fab2.setLayoutParams(layoutParams2);
-        fab2.startAnimation(hide_fab_2);
-        fab2.setClickable(false);
-        fab2Text.startAnimation(hide_fab_2);
-        fab2Text.setLayoutParams(layoutParams2);
-
-        layoutParams3.rightMargin -= (int) (fab3.getWidth() * 3.5);
-        layoutParams3.bottomMargin -= (int) (fab3.getHeight() * 3.5);
-        fab3.setLayoutParams(layoutParams3);
-        fab3.startAnimation(hide_fab_3);
-        fab3.setClickable(false);
-        fab3Text.startAnimation(hide_fab_3);
-        fab3Text.setLayoutParams(layoutParams3);
-
-        tintImage.setVisibility(View.INVISIBLE);
     }
 
     @Override

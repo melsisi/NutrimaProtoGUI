@@ -45,7 +45,7 @@ public class BusinessDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Setting Restaurant name as title //////////////////////////////
-        CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+        CollapsingToolbarLayout ctl = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         Intent intent = this.getIntent();
         String businessName = intent.getStringExtra("BUSINESS_NAME");
@@ -62,6 +62,7 @@ public class BusinessDetailsActivity extends AppCompatActivity {
             if(entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
                 plateNamesFM.addAll(entry.getValue());
                 business = entry.getKey();
+                break;
             }
         }
         ///////////////////////////////////////////////
@@ -70,8 +71,10 @@ public class BusinessDetailsActivity extends AppCompatActivity {
         // Get personalized menu ///////////////////////////////////
         for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
                 Globals.getInstance().getRestaurantPersonalizedMenuMap().entrySet()) {
-            if(entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase()))
+            if(entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
                 plateNamesPM.addAll(entry.getValue());
+                break;
+            }
         }
 
         ///////////////////////////////////////////////

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/splash_relativeLayout"
+    android:background="@drawable/test_bck">
+
+    <ImageView android:layout_width="@dimen/splash_logo_width"
+        android:layout_height="@dimen/splash_logo_height"
+        android:src="@drawable/logo_no_bckgrnd"
+        android:id="@+id/splash_logo_imageView"
+        android:layout_gravity="center_horizontal|top"/>
+
+    <ImageView android:layout_width="@dimen/splash_name_width"
+        android:layout_height="@dimen/splash_name_height"
+        android:src="@drawable/nutrima_text"
+        android:id="@+id/splash_name_imageView"
+        android:layout_gravity="center"/>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/referralId_cardView"
+        android:layout_gravity="bottom"
+        android:visibility="invisible"
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:foreground="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:visibility="visible">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Invitation Only!"
+                android:textSize="40dp"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Thank you for your interest in Nutrima. We're currently in beta, new users can experience Nutrima only with a valid referral code."
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Have a referral code? Enter it below."
+                android:layout_marginTop="20dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="referral code"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="submit"
+                    android:layout_gravity="end"
+                    android:id="@+id/submit_button"
+                    style="@style/Base.Widget.AppCompat.ActionButton"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Don't have one?"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Get on the list now"
+                    android:id="@+id/signup_button"
+                    style="@style/Base.Widget.AppCompat.ActionButton"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/enter_email_cardView"
+        android:layout_gravity="bottom"
+        android:visibility="invisible"
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:foreground="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:visibility="visible">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Get on the list!"
+                android:textSize="40dp"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Enter your email address below."
+                android:layout_marginTop="20dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="email address"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="submit"
+                android:layout_gravity="end"
+                android:id="@+id/email_submit_button"
+                style="@style/Base.Widget.AppCompat.ActionButton"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="We're excited to have you on the waiting list. Now you will be among the early ones to experience Nutrima."
+                android:paddingBottom="20dp"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/thankyou_cardView"
+        android:layout_gravity="bottom"
+        android:visibility="invisible"
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:foreground="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:visibility="visible">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Thank you!"
+                android:textSize="40dp"
+                android:fontFamily="sans-serif-thin"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Now just keep an eye on your email, you'll be getting your access code pretty soon."
+                android:layout_marginTop="20dp"/>
+            <ImageView
+                android:layout_width="86dp"
+                android:layout_height="84dp"
+                android:src="@drawable/done_tick"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/thankyou_imageView"
+                android:layout_gravity="end"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

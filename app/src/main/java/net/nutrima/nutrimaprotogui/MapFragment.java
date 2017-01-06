@@ -7,6 +7,8 @@ import android.content.res.ColorStateList;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -15,11 +17,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,36 +47,55 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback,
-        GoogleApiClient.OnConnectionFailedListener,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
-
-    private GoogleApiClient mGoogleApiClient;
-
-    private Location mLastLocation;
-
     private String city;
-
     private final int MY_PERMISSIONS_REQUEST = 0;
-
     private ArrayList<Business> businessesToMap;
-
     private final String QUERY = "restaurant";
-
     private FloatingActionButton businessOkFab;
-
     private boolean markerClicked;
-
     private  View rootView;
-
     public static final String TAG = MapFragment.class.getSimpleName();
     private Marker marker;
+
+    private static GoogleApiClient mGoogleApiClient;
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        FindHeavyOperations.getInstance().populateLocations(getActivity());
+
+        // Animate camera to current position
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
+                        FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.e("GOOGLE CLIENT SISI", "SUSPENDED");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e("GOOGLE CLIENT SISI", "FAILED");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .enableAutoManage(getActivity(), 0, this)
+                .addApi(LocationServices.API)
+                // Not used currently .addApi(Places.GEO_DATA_API)
+                // Not used currently .addApi(Places.PLACE_DETECTION_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
         rootView = inflater.inflate(R.layout.activity_map, container, false);
 
@@ -84,8 +109,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 // Animate camera to current position
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),
-                        mLastLocation.getLongitude()), 13.0f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
+                                FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
             }
         });
 
@@ -105,11 +131,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         markerClicked = false;
         businessOkFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.medium_grey)));
         return rootView;
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-
     }
 
     /**
@@ -135,7 +156,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         }
 
         mMap.setMyLocationEnabled(true);
-        mLastLocation = FindHeavyOperations.getmLastLocation();
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
         // 2- Use location to get surrounding businesses /////////////////
@@ -162,9 +182,9 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         new Thread(new Runnable() {
             public void run() {
                 // Wait until Yelp retrieval has finished
-                while (!FindHeavyOperations.isYelpBusinessesReady()) {}
+                while (!FindHeavyOperations.getInstance().isYelpBusinessesReady()) {}
 
-                businessesToMap = FindHeavyOperations.getBusinessesToMap();
+                businessesToMap = FindHeavyOperations.getInstance().getBusinessesToMap();
 
                 // TODO: Filter for presence in AWS (local)
 
@@ -210,7 +230,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                                     .position(entry.getKey().getCoordinates()));
                         }
 
-                        FindHeavyOperations.getActivity().getWindow().
+                        //FindHeavyOperations.getInstance().getActivity().getWindow().
+                        getActivity().getWindow().
                                 clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
                         rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
@@ -218,10 +239,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 });
             }
         }).start();
-
-        // Animate camera to current position
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),
-                mLastLocation.getLongitude()), 13.0f));
     }
 
     private void filterFromEngine(MealNutrients mn) {
@@ -280,9 +297,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onPause() {
         super.onPause();
-        if (FindHeavyOperations.getmGoogleApiClient().isConnected()) {
-            FindHeavyOperations.getmGoogleApiClient().disconnect();
+        if (FindHeavyOperations.getInstance().getmGoogleApiClient()!=null &&
+                FindHeavyOperations.getInstance().getmGoogleApiClient().isConnected()) {
+            FindHeavyOperations.getInstance().getmGoogleApiClient().disconnect();
         }
+    }
+
+    @Override
+    public void onStop() {
+        if( FindHeavyOperations.getInstance().getmGoogleApiClient() != null &&
+                FindHeavyOperations.getInstance().getmGoogleApiClient().isConnected() ) {
+            FindHeavyOperations.getInstance().getmGoogleApiClient().disconnect();
+        }
+        super.onStop();
     }
 
     @Override
@@ -338,15 +365,24 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         markerClicked = true;
         businessOkFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.nutrimaOrange)));
         this.marker = marker;
-        LinearLayout l = (LinearLayout)this.getActivity().findViewById(R.id.bottom_bar_linearlayout);
-        l.setVisibility(View.VISIBLE);
+        LinearLayout l = (LinearLayout)this.getActivity().findViewById(R.id.bottom_bar_linearLayout);
+        //l.setVisibility(View.VISIBLE);
+        Animation bottomLayoutSlideIn;
+        if(l.getLayoutParams().height == 0){
+            bottomLayoutSlideIn = AnimationUtils.loadAnimation(this.getContext(), R.anim.enter_from_bottom);
+        }
+        else {
+            bottomLayoutSlideIn = AnimationUtils.loadAnimation(this.getContext(), android.R.anim.fade_in);
+        }
+        l.getLayoutParams().height=700;
 
         final TextView businessName = (TextView)this.getActivity().findViewById(R.id.business_name_textview);
         TextView businessPhone = (TextView)this.getActivity().findViewById(R.id.business_phone_textview);
         TextView businessAddress = (TextView)this.getActivity().findViewById(R.id.business_address_textview);
 
         businessName.setText(marker.getTitle());
-
+        //Animation bottomLayoutSlideIn = AnimationUtils.loadAnimation(this.getContext(), R.anim.enter_from_bottom
+        //        /*android.R.anim.fade_in*/);
         for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
                 Globals.getInstance().getRestaurantFullMenuMap().entrySet())
         {
@@ -355,8 +391,42 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 businessAddress.setText(entry.getKey().getAddress());
             }
         }
+        l.startAnimation(bottomLayoutSlideIn);
 
+        getActivity().findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+        fillTopThreeRelevantOptions(marker.getTitle());
+        getActivity().findViewById(R.id.progressBar).setVisibility(View.GONE);
         return true;
+    }
+
+    void fillTopThreeRelevantOptions(String businessName) {
+        final ListView sneakPeakListView = (ListView) getActivity().findViewById(R.id.sneak_peak_list_view);
+        ArrayList<RestaurantMenuItem> sneakPeakFM= new ArrayList<>();
+
+        // TODO: Convert to partial menu
+        // Get full menu ///////////////////////////////////
+        for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
+                Globals.getInstance().getRestaurantFullMenuMap().entrySet()) {
+            if(entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
+                int i = 0;
+                for(RestaurantMenuItem item : entry.getValue()) {
+                    sneakPeakFM.add(item);
+                    i++;
+                    if(i == 3)
+                        break;
+                }
+                break;
+            }
+        }
+
+        final ListMenuItemAdapter customAdapter = new ListMenuItemAdapter(getActivity(),
+                R.layout.item_list,
+                R.id.sneak_peak_list_view,
+                sneakPeakFM);
+
+        sneakPeakListView.setAdapter(customAdapter);
+
+        ///////////////////////////////////////////////
     }
 
     boolean tryParseInt(String value) {

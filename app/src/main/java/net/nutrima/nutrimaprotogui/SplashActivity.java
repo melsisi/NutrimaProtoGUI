@@ -1,10 +1,14 @@
 package net.nutrima.nutrimaprotogui;
 
+import android.*;
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
@@ -24,6 +28,7 @@ import com.google.android.gms.vision.Frame;
 public class SplashActivity extends AppCompatActivity {
 
     private final int SPLASH_DISPLAY_LENGTH = 4500;
+    private final int MY_PERMISSIONS_REQUEST = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,24 +38,73 @@ public class SplashActivity extends AppCompatActivity {
 
         animations();
 
-        handleSignUpButton();
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET},
+                    MY_PERMISSIONS_REQUEST);
+            return;
+        }
+        else {
+            handleSignUpButton();
 
-        handleEmailSubmitButton();
+            handleEmailSubmitButton();
 
-        handleSubmitButton();
+            handleSubmitButton();
 
-        final CardView card = (CardView) findViewById(R.id.referralId_cardView);
-        final Animation enterCardFromRight = AnimationUtils.loadAnimation(this, R.anim.enter_from_right);
-        enterCardFromRight.setDuration(1000);
-        enterCardFromRight.setFillAfter(true);
+            final CardView card = (CardView) findViewById(R.id.referralId_cardView);
+            final Animation enterCardFromRight = AnimationUtils.loadAnimation(this, R.anim.enter_from_right);
+            enterCardFromRight.setDuration(1000);
+            enterCardFromRight.setFillAfter(true);
 
-        new Handler().postDelayed(new Runnable(){
-            @Override
-            public void run() {
-                card.setVisibility(View.VISIBLE);
-                card.startAnimation(enterCardFromRight);
+            new Handler().postDelayed(new Runnable(){
+                @Override
+                public void run() {
+                    card.setVisibility(View.VISIBLE);
+                    card.startAnimation(enterCardFromRight);
+                }
+            }, SPLASH_DISPLAY_LENGTH);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    handleSignUpButton();
+
+                    handleEmailSubmitButton();
+
+                    handleSubmitButton();
+
+                    final CardView card = (CardView) findViewById(R.id.referralId_cardView);
+                    final Animation enterCardFromRight = AnimationUtils.loadAnimation(this, R.anim.enter_from_right);
+                    enterCardFromRight.setDuration(1000);
+                    enterCardFromRight.setFillAfter(true);
+
+                    new Handler().postDelayed(new Runnable(){
+                        @Override
+                        public void run() {
+                            card.setVisibility(View.VISIBLE);
+                            card.startAnimation(enterCardFromRight);
+                        }
+                    }, SPLASH_DISPLAY_LENGTH);
+
+
+                } else {
+                    // TODO: Show an apology message
+                    // Exit app.
+                }
+                return;
             }
-        }, SPLASH_DISPLAY_LENGTH);
+        }
     }
 
     public void animations(){

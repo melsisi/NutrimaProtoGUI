@@ -113,6 +113,8 @@ public class Yelp {
         return response.getBody();
     }
 
+    // TODO: Handle missing entries.
+
     private ArrayList<Business> getBusinessesArray(String JSONBody){
         JSONObject root = null;
         ArrayList<Business> businesses = new ArrayList<Business>();
@@ -122,36 +124,40 @@ public class Yelp {
             JSONArray businessesArray = root.getJSONArray("businesses");
             for(int i = 0; i< businessesArray.length(); i++) {
                 // get business
-                JSONObject business = businessesArray.getJSONObject(i);
+                try {
+                    JSONObject business = businessesArray.getJSONObject(i);
 
-                // get name and phone
-                String name = business.getString("name"); // basketball
-                String phone = business.getString("display_phone");
+                    // get name and phone
+                    String name = business.getString("name"); // basketball
+                    String phone = business.getString("display_phone");
 
-                // get image and rating mage urls
-                String imageUrl =business.getString("image_url");
-                String ratingImageUrl =business.getString("rating_img_url");
+                    // get image and rating mage urls
+                    String imageUrl = business.getString("image_url");
+                    String ratingImageUrl = business.getString("rating_img_url");
 
-                // get location and coordinates
-                JSONObject location = business.getJSONObject("location");
-                JSONObject coordinate = location.getJSONObject("coordinate");
-                JSONArray address = location.getJSONArray("display_address");
+                    // get location and coordinates
+                    JSONObject location = business.getJSONObject("location");
+                    JSONObject coordinate = location.getJSONObject("coordinate");
+                    JSONArray address = location.getJSONArray("display_address");
 
-                Double longitude = coordinate.getDouble("longitude"); // 40
-                Double latitude = coordinate.getDouble("latitude");
+                    Double longitude = coordinate.getDouble("longitude"); // 40
+                    Double latitude = coordinate.getDouble("latitude");
 
-                Business toAdd = new Business();
-                toAdd.setName(name);
-                toAdd.setPhone(phone);
-                toAdd.setCoordinates(new LatLng(latitude, longitude));
-                toAdd.setImageUrl(imageUrl);
-                toAdd.setRatingImageUrl(ratingImageUrl);
+                    Business toAdd = new Business();
+                    toAdd.setName(name);
+                    toAdd.setPhone(phone);
+                    toAdd.setCoordinates(new LatLng(latitude, longitude));
+                    toAdd.setImageUrl(imageUrl);
+                    toAdd.setRatingImageUrl(ratingImageUrl);
 
-                String fullAddress = "";
-                for(int j = 0; j < address.length(); j++)
-                    fullAddress += address.getString(j) + " ";
-                toAdd.setAddress(fullAddress);
-                businesses.add(toAdd);
+                    String fullAddress = "";
+                    for (int j = 0; j < address.length(); j++)
+                        fullAddress += address.getString(j) + " ";
+                    toAdd.setAddress(fullAddress);
+                    businesses.add(toAdd);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

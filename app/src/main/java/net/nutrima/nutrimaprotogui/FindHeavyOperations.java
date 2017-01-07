@@ -45,7 +45,6 @@ public class FindHeavyOperations {
     private final int MY_PERMISSIONS_REQUEST = 0;
     private static Location mLastLocation;
     private static String city;
-    private static GoogleApiClient mGoogleApiClient;
     private static boolean yelpBusinessesReady = false;
 
     public static FindHeavyOperations getInstance() {
@@ -72,7 +71,7 @@ public class FindHeavyOperations {
         }).start();
     }
 
-    public void populateLocations(final Activity activity) {
+    public void populateLocations(final Activity activity, GoogleApiClient mGoogleApiClient) {
 
         // 1- Get my current location ////////////////////////////////////
         if (ActivityCompat.checkSelfPermission(activity.getBaseContext(),
@@ -159,9 +158,4 @@ public class FindHeavyOperations {
     public void setYelpBusinessesReady(boolean yelpBusinessesReady) {
         FindHeavyOperations.yelpBusinessesReady = yelpBusinessesReady;
     }
-
-    public GoogleApiClient getmGoogleApiClient() {
-        return mGoogleApiClient;
-    }
-
 }

@@ -51,6 +51,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    private Marker previousMarker;
     private GoogleMap mMap;
     private String city;
     private final int MY_PERMISSIONS_REQUEST = 0;
@@ -61,11 +62,11 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private  View rootView;
     public static final String TAG = MapFragment.class.getSimpleName();
     private Marker marker;
-
     private static GoogleApiClient mGoogleApiClient;
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        FindHeavyOperations.getInstance().populateLocations(getActivity());
+        FindHeavyOperations.getInstance().populateLocations(getActivity(), mGoogleApiClient);
 
         // Animate camera to current position
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
@@ -197,6 +198,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                                         continue;
                                     List<RestaurantMenuItem> tempRawMenuItem = new DynamoDBManagerTask().
                                             execute(business.getName()).get();
+                                    if(tempRawMenuItem == null || tempRawMenuItem.size() == 0)
+                                        continue;
                                     Globals.getInstance().getRestaurantFullMenuMap().
                                             put(business, tempRawMenuItem);
                                 } catch (InterruptedException e) {
@@ -226,7 +229,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                             mMap.addMarker(new MarkerOptions()
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_logo))
                                     .title(entry.getKey().getName())
-                                    //.snippet(b.getName())
                                     .position(entry.getKey().getCoordinates()));
                         }
 
@@ -247,6 +249,10 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
                 Globals.getInstance().getRestaurantFullMenuMap().entrySet()) {
             List<RestaurantMenuItem> personalizedMenu = new ArrayList<>();
+            if(entry.getValue() == null) {
+                Log.w("FILTER", "Menu is NULL for: " + entry.getKey().getName());
+                continue;
+            }
             for(RestaurantMenuItem menuItem : entry.getValue()) {
                 if(menuItem.getCalories() == null || menuItem.getCarbohydrates() == null ||
                         menuItem.getTotalFat() == null || menuItem.getProtein() == null ||
@@ -297,45 +303,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onPause() {
         super.onPause();
-        if (FindHeavyOperations.getInstance().getmGoogleApiClient()!=null &&
-                FindHeavyOperations.getInstance().getmGoogleApiClient().isConnected()) {
-            FindHeavyOperations.getInstance().getmGoogleApiClient().disconnect();
+        if (mGoogleApiClient!=null &&
+                mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
         }
     }
 
     @Override
     public void onStop() {
-        if( FindHeavyOperations.getInstance().getmGoogleApiClient() != null &&
-                FindHeavyOperations.getInstance().getmGoogleApiClient().isConnected() ) {
-            FindHeavyOperations.getInstance().getmGoogleApiClient().disconnect();
+        if(mGoogleApiClient != null &&
+                mGoogleApiClient.isConnected() ) {
+            mGoogleApiClient.disconnect();
         }
         super.onStop();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
     }
 
     private static final double EARTHRADIUS = 6366198;
@@ -362,11 +342,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
+        if(previousMarker != null) {
+            previousMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_logo));
+        }
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18.0f));
+
+        previousMarker = marker;
+        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_logo_clicked));
         markerClicked = true;
         businessOkFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.nutrimaOrange)));
         this.marker = marker;
         LinearLayout l = (LinearLayout)this.getActivity().findViewById(R.id.bottom_bar_linearLayout);
-        //l.setVisibility(View.VISIBLE);
+
         Animation bottomLayoutSlideIn;
         if(l.getLayoutParams().height == 0){
             bottomLayoutSlideIn = AnimationUtils.loadAnimation(this.getContext(), R.anim.enter_from_bottom);
@@ -374,11 +362,12 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         else {
             bottomLayoutSlideIn = AnimationUtils.loadAnimation(this.getContext(), android.R.anim.fade_in);
         }
-        l.getLayoutParams().height=700;
+        l.getLayoutParams().height=800;
 
         final TextView businessName = (TextView)this.getActivity().findViewById(R.id.business_name_textview);
         TextView businessPhone = (TextView)this.getActivity().findViewById(R.id.business_phone_textview);
         TextView businessAddress = (TextView)this.getActivity().findViewById(R.id.business_address_textview);
+        TextView numOptionsTextView = (TextView)this.getActivity().findViewById(R.id.num_options_text_view);
 
         businessName.setText(marker.getTitle());
         //Animation bottomLayoutSlideIn = AnimationUtils.loadAnimation(this.getContext(), R.anim.enter_from_bottom
@@ -389,6 +378,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             if(entry.getKey().getName().equals(marker.getTitle())){
                 businessPhone.setText(entry.getKey().getPhone());
                 businessAddress.setText(entry.getKey().getAddress());
+                numOptionsTextView.setText("Top 3 options: (from " + entry.getValue().size() + " total)");
             }
         }
         l.startAnimation(bottomLayoutSlideIn);

@@ -96,7 +96,7 @@ public class ProfileCreatorActivity extends FragmentActivity
                 @Override
                 public void run() {
                     Intent activityChangeIntent = new Intent(ProfileCreatorActivity.this,
-                            MainActivity.class);
+                            SimpleMainActivity.class);
                     activityChangeIntent.putExtra("FROM", "PROFILE");
                     startActivity(activityChangeIntent);
                 }

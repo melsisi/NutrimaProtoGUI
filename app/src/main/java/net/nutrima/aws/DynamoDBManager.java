@@ -1,5 +1,8 @@
 package net.nutrima.aws;
 
+import android.util.Log;
+
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
@@ -62,12 +65,17 @@ public class DynamoDBManager {
         DynamoDBQueryExpression<RestaurantMenuItem> queryExpression =
                 new DynamoDBQueryExpression<RestaurantMenuItem>()
                 .withHashKeyValues(replyKey);
-
+        ArrayList<Object> testList = new ArrayList<>();
+        RestaurantMenuItem testItem = new RestaurantMenuItem();
+        testItem.setRestaurant("Subway");
+        testList.add(testItem);
         try {
             List<RestaurantMenuItem> latestReplies = mapper.query(RestaurantMenuItem.class, queryExpression);
             return latestReplies;
         } catch (AmazonServiceException ex) {
             Globals.getInstance().getClientManager().wipeCredentialsOnAuthError(ex);
+        } catch (AmazonClientException ex) {
+            Log.e("DynamoDBManager", ex.toString() + " for business: " + restaurant);
         }
 
         return null;

@@ -23,6 +23,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Range;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,8 +33,11 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -47,6 +52,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.florescu.android.rangeseekbar.RangeSeekBar;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -74,7 +81,7 @@ public class SimpleMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_main);
 
-        //FindHeavyOperations.getInstance().buildGoogleApiClient(this);
+        handleConfigFilterButton();
 
         Intent intent = this.getIntent();
         String fromPage = intent.getStringExtra("FROM");
@@ -89,7 +96,7 @@ public class SimpleMainActivity extends AppCompatActivity {
 
         adapter = new Adapter(getSupportFragmentManager());
 
-        logSaveFab = (FloatingActionButton) findViewById(R.id.save_log_fab);
+        //logSaveFab = (FloatingActionButton) findViewById(R.id.save_log_fab);
 
         // Setting ViewPager for each Tabs
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -144,15 +151,57 @@ public class SimpleMainActivity extends AppCompatActivity {
                     }
                 });
 
-        logSaveFab.setOnClickListener(new View.OnClickListener() {
+        /*.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: Save log
                 setupViewPager("main");
             }
-        });
+        });*/
 
         populateLocalAWSRestaurantList();
+
+    }
+
+    private void handleConfigFilterButton() {
+        ImageButton configFilterButton = (ImageButton) findViewById(R.id.config_filter_button);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.config_filter, null);
+
+        SeekBar maxCaloriesSeekBar = (SeekBar) dialogView.findViewById(R.id.config_filter_max_calories_seekbar);
+        final TextView maxCaloriesValue = (TextView) dialogView.findViewById(R.id.max_calories_value);
+
+        maxCaloriesSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                maxCaloriesValue.setText(Integer.toString(progress));
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        configFilterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Inflate and set the layout for the dialog
+                // Pass null as the parent view because its going in the dialog layout
+                builder.setView(dialogView)
+                        // Add action buttons
+                        .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                // sign in the user ...
+                            }
+                        });
+                builder.create().show();
+            }
+        });
     }
 
     @Override
@@ -218,14 +267,14 @@ public class SimpleMainActivity extends AppCompatActivity {
                     new CoordinatorLayout.LayoutParams(viewPager.getLayoutParams().width,
                             viewPager.getLayoutParams().height);
             viewPager.setLayoutParams(layoutParams);
-            logSaveFab.setVisibility(View.INVISIBLE);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            adapter.removeAll();
+            //logSaveFab.setVisibility(View.INVISIBLE);
+            //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            //adapter.removeAll();
             adapter.addFragment(new MapFragment(), "NutriMap");
             adapter.addFragment(new ListContentFragment(), "NutriList");
-            adapter.notifyDataSetChanged();
-            showLogAdd = false;
-            invalidateOptionsMenu();
+            //adapter.notifyDataSetChanged();
+            //showLogAdd = false;
+            //invalidateOptionsMenu();
         }
     }
 

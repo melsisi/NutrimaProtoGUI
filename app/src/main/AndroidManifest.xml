@@ -20,33 +20,34 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".LoginActivity" />
 
-        <!--activity android:name=".MainActivity" /-->
+        <!-- activity android:name=".MainActivity" / -->
         <activity android:name=".SimpleMainActivity" />
         <activity
             android:name=".BusinessDetailsActivity"
             android:label="@string/title_activity_business_details"
-            android:parentActivityName=".SimpleMainActivity"></activity>
+            android:parentActivityName=".SimpleMainActivity" />
         <activity
             android:name=".PersonalInfoActivity"
             android:label="@string/title_activity_personal_info"
-            android:parentActivityName=".SimpleMainActivity"></activity>
+            android:parentActivityName=".SimpleMainActivity" />
         <activity
             android:name=".LoginDetailsActivity"
             android:label="@string/title_activity_login_details" />
-        <activity android:name=".ProfileCreatorActivity"></activity>
+        <activity android:name=".ProfileCreatorActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".NutritionTableActivity"></activity>
     </application>
 
 </manifest>

@@ -30,25 +30,38 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.nutrima.aws.RestaurantMenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Provides UI for the view with List.
  */
 public class ListContentFragment extends Fragment {
+
+    static ContentAdapter adapter;
+    static RecyclerView recyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+        recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // TODO: Only do this after FM has been populated.
 
-        //while (Globals.getInstance().isMenusReady() == false) {}
+        return recyclerView;
+    }
 
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+    public static void refreshListAfterAWS() {
+        adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return recyclerView;
+
+        adapter.notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -68,19 +81,15 @@ public class ListContentFragment extends Fragment {
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
         private static final int LENGTH = Globals.getInstance().getRestaurantFullMenuMap().size();
-        private final Set<Business> businesses;
-        private final Set<Business> mPlaceDesc;
-        private final Drawable[] mPlaceAvators;
+        private List<Business> businesses = null;
+        private Map<Business, List<RestaurantMenuItem>> menuMap = null;
+
         public ContentAdapter(Context context) {
-            Resources resources = context.getResources();
-            businesses = Globals.getInstance().getRestaurantFullMenuMap().keySet();
-            mPlaceDesc = businesses;
-            TypedArray a = resources.obtainTypedArray(R.array.place_avator);
-            mPlaceAvators = new Drawable[a.length()];
-            for (int i = 0; i < mPlaceAvators.length; i++) {
-                mPlaceAvators[i] = a.getDrawable(i);
-            }
-            a.recycle();
+            if(Globals.getInstance().getRestaurantFullMenuMap() == null ||
+                    Globals.getInstance().getRestaurantFullMenuMap().size() == 0)
+                return;
+            businesses = new ArrayList<>(Globals.getInstance().getRestaurantFullMenuMap().keySet());
+            menuMap = Globals.getInstance().getRestaurantFullMenuMap();
         }
 
         @Override
@@ -90,9 +99,14 @@ public class ListContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+            if(businesses == null || businesses.size() == 0)
+                return;
+            if(position==0)
+                return;
+            // TODO: Add place image
             //holder.avator.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
-            //holder.name.setText(businesses.getName());
-            //holder.description.setText(mPlaceDesc[position].getName());
+            holder.name.setText(businesses.get(0).getName());
+            holder.description.setText(businesses.get(0).getAddress());
         }
 
         @Override

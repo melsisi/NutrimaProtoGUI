@@ -66,7 +66,7 @@ public class FindHeavyOperations {
                         mLastLocation.getLatitude(),
                         mLastLocation.getLongitude(),
                         city);
-                yelpBusinessesReady = true;
+                MapFragment.yelpReadyCallback();
             }
         }).start();
     }

@@ -44,5 +44,6 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-cognito:2.2.+'
     compile 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.2.+'
     compile 'com.android.support:support-v4:24.2.0'
+    compile 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
     testCompile 'junit:junit:4.12'
 }

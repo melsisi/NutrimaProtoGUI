@@ -63,7 +63,7 @@ public class CardContentFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final int LENGTH = 2;
+        private static final int LENGTH = 200;
         private final String[] cardDesc;
         private final Drawable[] cardPictures;
         public ContentAdapter(Context context) {
@@ -71,8 +71,8 @@ public class CardContentFragment extends Fragment {
             cardDesc = resources.getStringArray(R.array.card_desc);
             TypedArray a = resources.obtainTypedArray(R.array.cards_picture);
             cardPictures = new Drawable[a.length()];
-            for (int i = 0; i < cardPictures.length; i++) {
-                cardPictures[i] = a.getDrawable(i);
+            for (int i = 0; i < LENGTH; i++) {
+                cardPictures[i] = a.getDrawable(0);
             }
             a.recycle();
         }

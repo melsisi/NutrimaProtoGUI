@@ -34,7 +34,7 @@ public class Globals {
     private static AmazonClientManager clientManager;
     private static Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMap;
     private static Map<Business, List<RestaurantMenuItem>> restaurantPersonalizedMenuMap;
-    private static boolean isMenusReady;
+    private static int numRunningAWSThreads;
     private static List<String> AWSRestaurants;
 
     public static Globals getInstance() {
@@ -48,7 +48,7 @@ public class Globals {
         USDATable = new ArrayList<NutritionUSDAEntry>();
         nutrimaMetrics = new NutrimaMetrics();
         restaurantFullMenuMap = new HashMap<>();
-        isMenusReady = false;
+        numRunningAWSThreads = 0;
         AWSRestaurants = new ArrayList<>();
     }
 
@@ -84,12 +84,12 @@ public class Globals {
         this.restaurantFullMenuMap = restaurantMenuMap;
     }
 
-    public boolean isMenusReady() {
-        return isMenusReady;
+    public int getNumRunningAWSThreads() {
+        return numRunningAWSThreads;
     }
 
-    public void setMenusReady(boolean menusReady) {
-        Globals.isMenusReady = menusReady;
+    public void setNumRunningAWSThreads(int numRunningAWSThreads) {
+        Globals.numRunningAWSThreads = numRunningAWSThreads;
     }
 
     public List<String> getAWSRestaurants() {

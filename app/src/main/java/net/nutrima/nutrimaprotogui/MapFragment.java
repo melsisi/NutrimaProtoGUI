@@ -52,28 +52,86 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         GoogleApiClient.OnConnectionFailedListener {
 
     private Marker previousMarker;
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
     private String city;
     private final int MY_PERMISSIONS_REQUEST = 0;
-    private ArrayList<Business> businessesToMap;
+    private static ArrayList<Business> businessesToMap;
     private final String QUERY = "restaurant";
     private FloatingActionButton businessOkFab;
     private boolean markerClicked;
-    private  View rootView;
+    private static View rootView;
     public static final String TAG = MapFragment.class.getSimpleName();
     private Marker marker;
     private static GoogleApiClient mGoogleApiClient;
-
+    private static long startTime;
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        startTime = System.nanoTime();
         FindHeavyOperations.getInstance().populateLocations(getActivity(), mGoogleApiClient);
 
         // Animate camera to current position
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
                         FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
+
     }
 
+    static public void yelpReadyCallback() {
+        businessesToMap = FindHeavyOperations.getInstance().getBusinessesToMap();
+
+        int i = 0;
+        for (final Business business : businessesToMap) {
+            if (businessNameAbscent(business.getName()))
+                continue;
+            i++;
+            Log.d("MAP_FRAGMENT", "Dispatching business name: " + business.getName());
+            new DynamoDBManagerTask().execute(business);
+            Globals.getInstance().setNumRunningAWSThreads(
+                    Globals.getInstance().getNumRunningAWSThreads() + 1);
+        }
+
+        Log.d("MAP_FRAGMENT", "Dispatched " + i + " AWS threads.");
+
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime);
+
+        Log.d("MAP_FRAGMENT", "Time taken in Yelp execution: " + (duration / 1000000) + " milliseconds.");
+    }
+
+    static public void awsReadyCallback() {
+        long tempTime = System.nanoTime();
+
+        long duration = (tempTime - startTime);
+
+        Log.d("MAP_FRAGMENT", "awsReadyCallback called after: " + (duration / 1000000) + " milliseconds.");
+
+        MealNutrients mn = new MealNutrients(Globals.getInstance().getNutrimaMetrics(),
+                new CurrentMetrics(),
+                Globals.getInstance().getUserProfile());
+
+        filterFromEngine(mn);
+
+        for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
+                Globals.getInstance().getRestaurantFullMenuMap().entrySet())
+        //Globals.getInstance().getRestaurantPersonalizedMenuMap().entrySet())
+        {
+            mMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_logo))
+                    .title(entry.getKey().getName())
+                    .position(entry.getKey().getCoordinates()));
+        }
+
+        //getActivity().getWindow().
+        //        clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
+        long endTime = System.nanoTime();
+
+        duration = (endTime - startTime);
+
+        Log.d("MAP_FRAGMENT", "Time taken in execution: " + (duration / 1000000) + " milliseconds.");
+    }
     @Override
     public void onConnectionSuspended(int i) {
         Log.e("GOOGLE CLIENT SISI", "SUSPENDED");
@@ -179,11 +237,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         // 3- Filter surroundings
 
         // 3-a- Filter for "FOOD" ////////////////////////////////////////
-
+/*
         new Thread(new Runnable() {
             public void run() {
                 // Wait until Yelp retrieval has finished
-                while (!FindHeavyOperations.getInstance().isYelpBusinessesReady()) {}
+                while (!FindHeavyOperations.getInstance().isYelpBusinessesReady()) {
+                    //Log.d("MAP_FRAGMENT", "Waiting for Yelp Thread!");
+                }
 
                 businessesToMap = FindHeavyOperations.getInstance().getBusinessesToMap();
 
@@ -193,24 +253,33 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 for(final Business business : businessesToMap) {
                         //new Thread(new Runnable() {
                         //    public void run() {
-                                try {
+                                //try {
                                     if(businessNameAbscent(business.getName()))
                                         continue;
-                                    List<RestaurantMenuItem> tempRawMenuItem = new DynamoDBManagerTask().
-                                            execute(business.getName()).get();
-                                    if(tempRawMenuItem == null || tempRawMenuItem.size() == 0)
-                                        continue;
-                                    Globals.getInstance().getRestaurantFullMenuMap().
-                                            put(business, tempRawMenuItem);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                }
+                                    //List<RestaurantMenuItem> tempRawMenuItem = new DynamoDBManagerTask().
+                                    //        execute(business.getName()).get();
+                                    new DynamoDBManagerTask().execute(business);
+                                    Globals.getInstance().setNumRunningAWSThreads(
+                                            Globals.getInstance().getNumRunningAWSThreads() + 1);
+                                    //if(tempRawMenuItem == null || tempRawMenuItem.size() == 0)
+                                    //    continue;
+                                    //Globals.getInstance().getRestaurantFullMenuMap().
+                                    //        put(business, tempRawMenuItem);
+                                //} catch (InterruptedException e) {
+                                //    e.printStackTrace();
+                                //} catch (ExecutionException e) {
+                                //    e.printStackTrace();
+                                //}
                          //   }
                         //}).start();
                 }
-                Globals.getInstance().setMenusReady(true);
+
+                //Globals.getInstance().setMenusReady(true);
+
+                while(Globals.getInstance().getNumRunningAWSThreads() != 0) {
+                    //Log.d("MAP_FRAGMENT", "Waiting for AWS Thread! (" +
+                    //        Globals.getInstance().getNumRunningAWSThreads()  + ")");
+                }
 
                 MealNutrients mn = new MealNutrients(Globals.getInstance().getNutrimaMetrics(),
                         new CurrentMetrics(),
@@ -218,10 +287,10 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
                 filterFromEngine(mn);
 
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable(){
-                    @Override
-                    public void run() {
+                //Handler handler = new Handler(Looper.getMainLooper());
+                //handler.post(new Runnable(){
+                //    @Override
+                //    public void run() {
                         for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
                                 Globals.getInstance().getRestaurantFullMenuMap().entrySet())
                                 //Globals.getInstance().getRestaurantPersonalizedMenuMap().entrySet())
@@ -237,13 +306,19 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                                 clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
                         rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
-                    }
-                });
+                        long endTime = System.nanoTime();
+
+                        long duration = (endTime - startTime);
+
+                        Log.d("MAP_FRAGMENT", "Time taken in execution: " + (duration/1000000) + " milliseconds.");
+                //    }
+                //});
             }
         }).start();
+*/
     }
 
-    private void filterFromEngine(MealNutrients mn) {
+    private static void filterFromEngine(MealNutrients mn) {
         Map<Business,List<RestaurantMenuItem>> personalizedMenus = new HashMap<>();
 
         for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
@@ -288,7 +363,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         Globals.getInstance().setRestaurantPersonalizedMenuMap(personalizedMenus);
     }
 
-    private boolean businessNameAbscent(String name) {
+    private static boolean businessNameAbscent(String name) {
         boolean absent = true;
         for(String s : Globals.getInstance().getAWSRestaurants()) {
             if(s.toLowerCase().contains(name.toLowerCase()) ||
@@ -419,7 +494,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         ///////////////////////////////////////////////
     }
 
-    boolean tryParseInt(String value) {
+    static boolean tryParseInt(String value) {
         try {
             Integer.parseInt(value);
             return true;

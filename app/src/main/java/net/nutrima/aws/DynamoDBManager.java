@@ -66,14 +66,14 @@ public class DynamoDBManager {
                 new DynamoDBQueryExpression<RestaurantMenuItem>()
                 .withHashKeyValues(replyKey);
 
-        ArrayList<Object> testList = new ArrayList<>();
-        RestaurantMenuItem testItem = new RestaurantMenuItem();
-        testItem.setRestaurant("Subway");
-        testList.add(testItem);
-
         try {
-            //Map<String, List<Object>> items = mapper.batchLoad(testList);
+            long startTime = System.nanoTime();
             List<RestaurantMenuItem> latestReplies = mapper.query(RestaurantMenuItem.class, queryExpression);
+            long endTime = System.nanoTime();
+
+            long duration = (endTime - startTime);
+
+            Log.d("DYNAMODB_MANAGER", "Time taken in single AWS xaction: " + (duration / 1000000) + " milliseconds.");
             return latestReplies;
         } catch (AmazonServiceException ex) {
             Globals.getInstance().getClientManager().wipeCredentialsOnAuthError(ex);

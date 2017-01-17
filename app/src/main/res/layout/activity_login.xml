@@ -1,87 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="net.nutrima.nutrimaprotogui.LoginActivity">
-    <ScrollView android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_weight="0.7">
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:orientation="vertical">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:src="@drawable/the_logo"/>
 
-    <!--TextView
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/signup_via_email"
-        android:paddingTop="100dp" /-->
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="net.nutrima.nutrimaprotogui.LoginActivity"
+        android:paddingBottom="16dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
 
-    <android.support.v4.widget.Space
-        android:layout_width="match_parent"
-        android:layout_height="250dp" />
+        <ImageView android:layout_width="@dimen/splash_logo_width"
+            android:layout_height="@dimen/splash_logo_height"
+            android:src="@drawable/logo_no_bckgrnd"
+            android:id="@+id/splash_logo_imageView"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_gravity="center_horizontal"/>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/signup_with_facebook"
-                android:id="@+id/fb_button"
-                android:background="#3b5998"
-                android:layout_marginTop="30dp"
-                android:textColor="@android:color/white" />
-
-            <!--Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/signup_with_google"
-                android:id="@+id/googleplus_button"
-                android:background="#d34836"
-                android:layout_marginTop="30dp"
-                android:textColor="@android:color/white" /-->
-    <!--Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log on"
-        android:id="@+id/log_on_button"
-        android:layout_gravity="right" /-->
-
-        </LinearLayout>
-    </ScrollView>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_weight="0">
+        <ImageView android:layout_width="@dimen/splash_name_width"
+            android:layout_height="@dimen/splash_name_height"
+            android:src="@drawable/nutrima_text"
+            android:id="@+id/splash_name_imageView"
+            android:layout_below="@id/splash_logo_imageView"
+            android:layout_centerHorizontal="true"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Sneak Peak"
+            android:text="Skip (for test mode)"
             android:id="@+id/sneak_peak_button"
-            android:layout_weight="1"
-            style="@style/Base.Widget.AppCompat.ActionButton" />
-    </LinearLayout>
-</LinearLayout>
+            style="@style/Base.Widget.AppCompat.ActionButton"
+            android:layout_alignParentBottom="true"/>
+
+        <com.facebook.login.widget.LoginButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fb_button"
+            android:layout_marginTop="30dp"
+            android:layout_above="@id/sneak_peak_button"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/or_text_view"
+            android:text="or"
+            android:textSize="20dp"
+            android:fontFamily="sans-serif-thin"
+            android:layout_above="@id/fb_button"
+            android:textAlignment="center" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText"
+            android:layout_gravity="center_horizontal"
+            android:hint="email address"
+            android:layout_above="@id/or_text_view"
+            android:textAlignment="center"
+            android:textAllCaps="false" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"
+            android:id="@+id/initial_loading_progress"
+            android:elevation="7dp"/>
+
+        <ImageView
+            android:id="@+id/tint_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.7"
+            android:background="#ffffff"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+</FrameLayout>

@@ -13,10 +13,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/navheader_height"
-    android:background="?attr/colorPrimaryDark"
-    android:orientation="vertical"
-    android:padding="@dimen/md_keylines">
-</LinearLayout>
+    android:background="?attr/colorPrimaryDark">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_header_image_view"
+        android:src="@drawable/logo_no_bckgrnd"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Long Name Test Line"
+        android:id="@+id/nav_header_text_view"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        android:fontFamily="sans-serif-thin"
+        android:paddingStart="5dp"/>
+</RelativeLayout>

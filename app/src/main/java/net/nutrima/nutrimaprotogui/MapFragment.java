@@ -1,12 +1,10 @@
 package net.nutrima.nutrimaprotogui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.location.Location;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,15 +14,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import android.content.IntentSender;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +34,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import net.nutrima.aws.DynamoDBManagerTask;
 import net.nutrima.aws.RestaurantMenuItem;
@@ -64,16 +70,101 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private Marker marker;
     private static GoogleApiClient mGoogleApiClient;
     private static long startTime;
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        startTime = System.nanoTime();
-        FindHeavyOperations.getInstance().populateLocations(getActivity(), mGoogleApiClient);
 
-        // Animate camera to current position
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
-                        FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
+        checkIfLocationServicesEnabled();
 
+    }
+
+    LocationRequest mCoarseLocationRequest;
+    private LocationRequest createLocationRequest() {
+        if (mCoarseLocationRequest == null) {
+            mCoarseLocationRequest = new LocationRequest();
+            mCoarseLocationRequest.setInterval(5000);
+            mCoarseLocationRequest.setFastestInterval(1000);
+            mCoarseLocationRequest.setNumUpdates(1);
+            mCoarseLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        }
+        return mCoarseLocationRequest;
+    }
+
+    /**
+     * Constant used in the location settings dialog.
+     */
+    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+    final static int REQUEST_LOCATION = 199;
+
+    private void checkIfLocationServicesEnabled() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(createLocationRequest());
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can initialize location
+                        // requests here.
+                        startTime = System.nanoTime();
+                        FindHeavyOperations.getInstance().populateLocations(getActivity(), mGoogleApiClient);
+
+                        // Animate camera to current position
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
+                                        FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(getActivity(), REQUEST_LOCATION);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way to fix the
+                        // settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode) {
+            case REQUEST_LOCATION:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        startTime = System.nanoTime();
+                        FindHeavyOperations.getInstance().populateLocations(getActivity(), mGoogleApiClient);
+
+                        // Animate camera to current position
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
+                                        FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+
+                        break;
+                    default:
+
+                        break;
+                }
+                break;
+        }
     }
 
     static public void yelpReadyCallback() {

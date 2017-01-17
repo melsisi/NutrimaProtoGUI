@@ -2,6 +2,7 @@ package net.nutrima.nutrimaprotogui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -35,6 +36,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +67,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SimpleMainActivity extends AppCompatActivity {
 
@@ -75,6 +78,8 @@ public class SimpleMainActivity extends AppCompatActivity {
     private FloatingActionButton logSaveFab;
     private boolean showLogAdd;
     private DrawerLayout mDrawerLayout;
+
+    private MapFragment mapFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +115,23 @@ public class SimpleMainActivity extends AppCompatActivity {
 
         // Create Navigation drawer and inflate layout
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if(Globals.getInstance().getFbResponse() != null) {
+            RelativeLayout navHeaderView = (RelativeLayout) navigationView.getHeaderView(0);
+            TextView navHeaderTextView = (TextView) navHeaderView.findViewById(R.id.nav_header_text_view);
+            navHeaderTextView.setText(Globals.getInstance().getFbResponse().getString("name"));
+
+            ImageView navHeaderImageView = (ImageView) navHeaderView.findViewById(R.id.nav_header_image_view);
+            Drawable ratingImage = null;
+            try {
+                ratingImage = new UrlAsyncTask().execute(
+                        Globals.getInstance().getFbResponse().getString("profile_pic")).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            navHeaderImageView.setImageDrawable(ratingImage);
+        }
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -270,7 +292,8 @@ public class SimpleMainActivity extends AppCompatActivity {
             //logSaveFab.setVisibility(View.INVISIBLE);
             //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             //adapter.removeAll();
-            adapter.addFragment(new MapFragment(), "NutriMap");
+            mapFragment = new MapFragment();
+            adapter.addFragment(mapFragment, "NutriMap");
             adapter.addFragment(new ListContentFragment(), "NutriList");
             //adapter.notifyDataSetChanged();
             //showLogAdd = false;
@@ -354,11 +377,6 @@ public class SimpleMainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     private void populateLocalAWSRestaurantList() {
         ArrayList<String> list = new ArrayList<>();
 
@@ -398,5 +416,15 @@ public class SimpleMainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Globals.getInstance().setAWSRestaurants(list);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MapFragment.REQUEST_LOCATION){
+            mapFragment.onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

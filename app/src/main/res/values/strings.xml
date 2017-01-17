@@ -18,7 +18,7 @@
     <string name="restaurant_us_table">RestaurantsUS2</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCerOK2080yjtPDEGVHV_9MnJaFCE4iPLQ</string>
 
-    <string name="signup_with_facebook">Signup with Facebook</string>
+    <string name="signup_with_facebook">Log in with Facebook</string>
     <string name="signup_with_google">Signup with Google+</string>
     <string name="signup_via_email">Signup via email</string>
     <string name="facebook_app_id" translatable="false">1140163042717628</string>

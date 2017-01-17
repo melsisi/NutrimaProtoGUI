@@ -36,6 +36,7 @@ public class Globals {
     private static Map<Business, List<RestaurantMenuItem>> restaurantPersonalizedMenuMap;
     private static int numRunningAWSThreads;
     private static List<String> AWSRestaurants;
+    private static Bundle fbResponse;
 
     public static Globals getInstance() {
         if(ourInstance == null) {
@@ -50,6 +51,7 @@ public class Globals {
         restaurantFullMenuMap = new HashMap<>();
         numRunningAWSThreads = 0;
         AWSRestaurants = new ArrayList<>();
+        fbResponse = null;
     }
 
     public List<NutritionUSDAEntry> getUSDATable() {
@@ -114,6 +116,14 @@ public class Globals {
 
     public void setUserProfile(UserProfile userProfile) {
         Globals.userProfile = userProfile;
+    }
+
+    public Bundle getFbResponse() {
+        return fbResponse;
+    }
+
+    public void setFbResponse(Bundle fbResponse) {
+        Globals.fbResponse = fbResponse;
     }
 
     public boolean amIRunningInEmulator() {

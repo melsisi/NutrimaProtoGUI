@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amazon.identity.auth.device.authorization.api.AmazonAuthorizationManager;
@@ -22,8 +24,8 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -59,7 +61,6 @@ public class LoginActivity extends Activity {
             "profile"
     };
 
-    private Button btnLoginFacebook;
     private CallbackManager callbackManager;
 
     private AmazonAuthorizationManager mAuthManager;
@@ -78,6 +79,8 @@ public class LoginActivity extends Activity {
         //--- FACEBOOK ---
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+        //////////////////
+
         setContentView(R.layout.activity_login);
         CognitoSyncClientManager.init(this);
 
@@ -105,38 +108,50 @@ public class LoginActivity extends Activity {
         }*/
         //////////////////////////////////////////////////////////////////
 
+        final LoginButton loginButton = (LoginButton) findViewById(R.id.fb_button);
+
         //If access token is already here, set fb session and proceed to application
         final AccessToken fbAccessToken = AccessToken.getCurrentAccessToken();
         if (fbAccessToken != null) {
-            Log.i("Main Activity", "======= FB Button: Inside tokenn======= ");
+            Log.i("Main Activity", "======= FB Button: Inside token======= ");
             //--x--setFacebookSession(fbAccessToken);
+            ImageView tintedBackground = (ImageView) findViewById(R.id.tint_image);
+            tintedBackground.setVisibility(View.VISIBLE);
+            ProgressBar progressDialog = (ProgressBar) findViewById(R.id.initial_loading_progress);
+            progressDialog.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.INVISIBLE);
             new CognitoInternetAccess(fbAccessToken).execute();
             //btnLoginFacebook.setVisibility(View.GONE);
-            Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
-            startActivity(activityChangeIntent);
-            finish();
+            //Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
+            //startActivity(activityChangeIntent);
+            //finish();
         }
 
 
-        btnLoginFacebook = (Button) findViewById(R.id.fb_button);
-        btnLoginFacebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //btnLoginFacebook = (Button) findViewById(R.id.fb_button);
+        //btnLoginFacebook.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View v) {
                 // start Facebook Login
-                Log.i("Main Activity", "======= FB Button: Inside listen======= ");
-                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "user_friends", "user_birthday", "user_about_me", "email"));
-                LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
+        //        Log.i("Main Activity", "======= FB Button: Inside listen======= ");
+        //        LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "user_friends", "user_birthday", "user_about_me", "email"));
+        //        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "user_friends", "user_birthday", "user_about_me", "email"));
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         Log.i("Main Activity", "======= FB Button: Inside onSuccess======= ");
+                        ImageView tintedBackground = (ImageView) findViewById(R.id.tint_image);
+                        tintedBackground.setVisibility(View.VISIBLE);
+                        ProgressBar progressDialog = (ProgressBar) findViewById(R.id.initial_loading_progress);
+                        progressDialog.setVisibility(View.VISIBLE);
                         CognitoSyncClientManager.clear(); //Clear an unauthorized access
-                        btnLoginFacebook.setVisibility(View.INVISIBLE);
+                        loginButton.setVisibility(View.INVISIBLE);
                         new GetFbName(loginResult).execute();
                         //setFacebookSession(loginResult.getAccessToken());
-                        Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
-                        startActivity(activityChangeIntent);
-                        finish();
+                        //Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
+                        //startActivity(activityChangeIntent);
+                        //finish();
                     }
 
                     @Override
@@ -151,9 +166,10 @@ public class LoginActivity extends Activity {
                                 error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }
-        });
-        btnLoginFacebook.setEnabled(getString(R.string.facebook_app_id) != "facebook_app_id");
+        //    }
+        //});
+        loginButton.setEnabled(getString(R.string.facebook_app_id) != "facebook_app_id");
+        //btnLoginFacebook.setEnabled(getString(R.string.facebook_app_id) != "facebook_app_id");
 
         //--- GOOGLE + ---
         //TODO: Handle Google + login
@@ -356,9 +372,14 @@ public class LoginActivity extends Activity {
                 Toast.makeText(LoginActivity.this, "Please register to enjoy Nutrima full capability!", Toast.LENGTH_LONG).show();
             } else {
                 if (response != null) {
+                    Globals.getInstance().setFbResponse(response);
                     Toast.makeText(LoginActivity.this, "Hello " + response.getString("name"), Toast.LENGTH_LONG).show();
                 }
             }
+
+            Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
+            startActivity(activityChangeIntent);
+            finish();
         }
     }
 
@@ -401,11 +422,15 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(Bundle response) {
             //dialog.dismiss();
             if (response != null) {
+                Globals.getInstance().setFbResponse(response);
                 Toast.makeText(LoginActivity.this, "Hello " + response.getString("name"), Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(LoginActivity.this, "Unable to get user name from Facebook",
                         Toast.LENGTH_LONG).show();
             }
+            Intent activityChangeIntent = new Intent(LoginActivity.this, SimpleMainActivity.class);
+            startActivity(activityChangeIntent);
+            finish();
         }
     }
 

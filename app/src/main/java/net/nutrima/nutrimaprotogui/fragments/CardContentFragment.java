@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -22,7 +22,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +30,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Random;
+import net.nutrima.nutrimaprotogui.R;
+
 
 /**
- * Provides UI for the view with Tiles.
+ * Provides UI for the view with Cards.
  */
-public class TileContentFragment extends Fragment {
+public class CardContentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -44,20 +45,19 @@ public class TileContentFragment extends Fragment {
         ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        // Set padding for Tiles
-        int tilePadding = getResources().getDimensionPixelSize(R.dimen.tile_padding);
-        recyclerView.setPadding(tilePadding, tilePadding, tilePadding, tilePadding);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView picture;
-        public TextView name;
+        public TextView description;
+        public TextView poster;
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_tile, parent, false));
-            picture = (ImageView) itemView.findViewById(R.id.tile_picture);
-            name = (TextView) itemView.findViewById(R.id.tile_title);
+            super(inflater.inflate(R.layout.item_card, parent, false));
+            picture = (ImageView) itemView.findViewById(R.id.card_image);
+            description = (TextView) itemView.findViewById(R.id.card_text);
+            poster = (TextView) itemView.findViewById(R.id.poster_text);
         }
     }
     /**
@@ -65,19 +65,16 @@ public class TileContentFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static int LENGTH;
-        private final String[] mPlaces;
-        private final Drawable[] mPlacePictures;
-        Resources resources;
-        private static int tileIndex = 0;
+        private static final int LENGTH = 200;
+        private final String[] cardDesc;
+        private final Drawable[] cardPictures;
         public ContentAdapter(Context context) {
-            resources = context.getResources();
-            mPlaces = resources.getStringArray(R.array.tiles);
-            LENGTH = mPlaces.length;
+            Resources resources = context.getResources();
+            cardDesc = resources.getStringArray(R.array.card_desc);
             TypedArray a = resources.obtainTypedArray(R.array.cards_picture);
-            mPlacePictures = new Drawable[a.length()];
-            for (int i = 0; i < mPlacePictures.length; i++) {
-                mPlacePictures[i] = a.getDrawable(i);
+            cardPictures = new Drawable[a.length()];
+            for (int i = 0; i < LENGTH; i++) {
+                cardPictures[i] = a.getDrawable(0);
             }
             a.recycle();
         }
@@ -89,15 +86,9 @@ public class TileContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            //holder.picture.setImageDrawable(mPlacePictures[position % mPlacePictures.length]);
-            int[] tileColors = {resources.getColor(R.color.nutrimaGreen),
-                    resources.getColor(R.color.nutrimaBlue),
-                    resources.getColor(R.color.nutrimaOrange),
-                    resources.getColor(R.color.nutrimaYellow)};
-            holder.picture.setBackgroundColor(tileColors[tileIndex++]);
-            holder.name.setText(mPlaces[position % mPlaces.length]);
-            if(tileIndex == 3)
-                tileIndex = 0;
+            holder.picture.setImageDrawable(cardPictures[position % cardPictures.length]);
+            holder.description.setText(cardDesc[position % cardDesc.length]);
+            holder.poster.setText("Posted by: Nutrima");
         }
 
         @Override

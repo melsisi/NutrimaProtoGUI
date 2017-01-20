@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -22,7 +22,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,49 +30,36 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.nutrima.aws.RestaurantMenuItem;
+import net.nutrima.nutrimaprotogui.R;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Random;
 
 /**
- * Provides UI for the view with List.
+ * Provides UI for the view with Tiles.
  */
-public class ListContentFragment extends Fragment {
-
-    static ContentAdapter adapter;
-    static RecyclerView recyclerView;
-
+public class TileContentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        recyclerView = (RecyclerView) inflater.inflate(
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        // TODO: Only do this after FM has been populated.
-
+        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        // Set padding for Tiles
+        int tilePadding = getResources().getDimensionPixelSize(R.dimen.tile_padding);
+        recyclerView.setPadding(tilePadding, tilePadding, tilePadding, tilePadding);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         return recyclerView;
     }
 
-    public static void refreshListAfterAWS() {
-        adapter = new ContentAdapter(recyclerView.getContext());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
-
-        adapter.notifyDataSetChanged();
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView avator;
+        public ImageView picture;
         public TextView name;
-        public TextView description;
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_list, parent, false));
-            avator = (ImageView) itemView.findViewById(R.id.list_avatar);
-            name = (TextView) itemView.findViewById(R.id.list_title);
-            description = (TextView) itemView.findViewById(R.id.list_desc);
+            super(inflater.inflate(R.layout.item_tile, parent, false));
+            picture = (ImageView) itemView.findViewById(R.id.tile_picture);
+            name = (TextView) itemView.findViewById(R.id.tile_title);
         }
     }
     /**
@@ -80,16 +67,21 @@ public class ListContentFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final int LENGTH = Globals.getInstance().getRestaurantFullMenuMap().size();
-        private List<Business> businesses = null;
-        private Map<Business, List<RestaurantMenuItem>> menuMap = null;
-
+        private static int LENGTH;
+        private final String[] mPlaces;
+        private final Drawable[] mPlacePictures;
+        Resources resources;
+        private static int tileIndex = 0;
         public ContentAdapter(Context context) {
-            if(Globals.getInstance().getRestaurantFullMenuMap() == null ||
-                    Globals.getInstance().getRestaurantFullMenuMap().size() == 0)
-                return;
-            businesses = new ArrayList<>(Globals.getInstance().getRestaurantFullMenuMap().keySet());
-            menuMap = Globals.getInstance().getRestaurantFullMenuMap();
+            resources = context.getResources();
+            mPlaces = resources.getStringArray(R.array.tiles);
+            LENGTH = mPlaces.length;
+            TypedArray a = resources.obtainTypedArray(R.array.cards_picture);
+            mPlacePictures = new Drawable[a.length()];
+            for (int i = 0; i < mPlacePictures.length; i++) {
+                mPlacePictures[i] = a.getDrawable(i);
+            }
+            a.recycle();
         }
 
         @Override
@@ -99,14 +91,15 @@ public class ListContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            if(businesses == null || businesses.size() == 0)
-                return;
-            if(position==0)
-                return;
-            // TODO: Add place image
-            //holder.avator.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
-            holder.name.setText(businesses.get(0).getName());
-            holder.description.setText(businesses.get(0).getAddress());
+            //holder.picture.setImageDrawable(mPlacePictures[position % mPlacePictures.length]);
+            int[] tileColors = {resources.getColor(R.color.nutrimaGreen),
+                    resources.getColor(R.color.nutrimaBlue),
+                    resources.getColor(R.color.nutrimaOrange),
+                    resources.getColor(R.color.nutrimaYellow)};
+            holder.picture.setBackgroundColor(tileColors[tileIndex++]);
+            holder.name.setText(mPlaces[position % mPlaces.length]);
+            if(tileIndex == 3)
+                tileIndex = 0;
         }
 
         @Override
@@ -115,3 +108,4 @@ public class ListContentFragment extends Fragment {
         }
     }
 }
+

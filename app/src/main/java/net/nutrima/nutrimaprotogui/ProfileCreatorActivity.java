@@ -4,13 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.UserProfile;
+import net.nutrima.nutrimaprotogui.fragments.ProfileAllergiesFragment;
+import net.nutrima.nutrimaprotogui.fragments.ProfileHabitsFragment;
+import net.nutrima.nutrimaprotogui.fragments.ProfileIllnessesFragment;
+import net.nutrima.nutrimaprotogui.fragments.ProfileMeasurementsDetailsFragment;
+import net.nutrima.nutrimaprotogui.fragments.ProfileMeasurementsFragment;
+import net.nutrima.nutrimaprotogui.fragments.ProfileThankyouFragment;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

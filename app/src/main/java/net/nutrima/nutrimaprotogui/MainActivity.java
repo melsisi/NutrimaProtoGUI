@@ -29,7 +29,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +37,10 @@ import com.facebook.login.LoginManager;
 
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.UserProfile;
+import net.nutrima.nutrimaprotogui.fragments.CardContentFragment;
+import net.nutrima.nutrimaprotogui.fragments.ListContentFragment;
+import net.nutrima.nutrimaprotogui.fragments.LogFragment;
+import net.nutrima.nutrimaprotogui.fragments.MapFragment;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;

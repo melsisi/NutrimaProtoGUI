@@ -5,8 +5,8 @@ import android.util.Log;
 
 import net.nutrima.nutrimaprotogui.Business;
 import net.nutrima.nutrimaprotogui.Globals;
-import net.nutrima.nutrimaprotogui.ListContentFragment;
-import net.nutrima.nutrimaprotogui.MapFragment;
+import net.nutrima.nutrimaprotogui.fragments.ListContentFragment;
+import net.nutrima.nutrimaprotogui.fragments.MapFragment;
 
 import java.util.ArrayList;
 import java.util.List;

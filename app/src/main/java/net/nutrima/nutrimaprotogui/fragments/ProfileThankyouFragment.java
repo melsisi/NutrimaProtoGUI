@@ -1,10 +1,8 @@
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +10,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import net.nutrima.engine.MetricStandard;
-import net.nutrima.engine.UserProfile;
-import net.nutrima.engine.WeightGoal;
+import net.nutrima.nutrimaprotogui.R;
 
 
 public class ProfileThankyouFragment extends Fragment {

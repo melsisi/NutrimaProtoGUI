@@ -1,26 +1,25 @@
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
 
 import net.nutrima.engine.BodyType;
+import net.nutrima.engine.Gender;
 import net.nutrima.engine.MetricStandard;
 import net.nutrima.engine.UserProfile;
+import net.nutrima.nutrimaprotogui.Globals;
+import net.nutrima.nutrimaprotogui.R;
 
 
 public class ProfileMeasurementsDetailsFragment extends Fragment {
@@ -48,7 +47,34 @@ public class ProfileMeasurementsDetailsFragment extends Fragment {
         handleNextButton(rootView);
         handleBackButton(rootView);
         handleEditTexts(rootView);
+        handleRadioImagesBasedOnGender(rootView);
         return rootView;
+    }
+
+    private void handleRadioImagesBasedOnGender(View rootView) {
+        Gender gender = Globals.getInstance().getUserProfile().getGender();
+
+        if(gender == Gender.FEMALE ||
+                gender == Gender.PREGNANT_FEMALE ||
+                gender == Gender.BREAST_FEEDING_FEMALE) {
+            RadioButton endoRadioButton = (RadioButton) rootView.findViewById(R.id.endo_radioButton);
+            endoRadioButton.setCompoundDrawablesWithIntrinsicBounds (null,
+                    ContextCompat.getDrawable(getActivity(), R.drawable.body_type_endo_f),
+                    null,
+                    null);
+
+            RadioButton mesoRadioButton = (RadioButton) rootView.findViewById(R.id.meso_radioButton);
+            mesoRadioButton.setCompoundDrawablesWithIntrinsicBounds (null,
+                    ContextCompat.getDrawable(getActivity(), R.drawable.body_type_meso_f),
+                    null,
+                    null);
+
+            RadioButton ectoRadioButton = (RadioButton) rootView.findViewById(R.id.ecto_radioButton);
+            ectoRadioButton.setCompoundDrawablesWithIntrinsicBounds (null,
+                    ContextCompat.getDrawable(getActivity(), R.drawable.body_type_ecto_f),
+                    null,
+                    null);
+        }
     }
 
     private void handleEditTexts(View rootView) {

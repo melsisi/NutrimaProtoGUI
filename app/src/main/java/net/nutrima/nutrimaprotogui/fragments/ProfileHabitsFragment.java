@@ -1,4 +1,4 @@
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 
 import android.app.Activity;
@@ -15,6 +15,8 @@ import android.widget.Spinner;
 
 import net.nutrima.engine.ActivityLevel;
 import net.nutrima.engine.UserProfile;
+import net.nutrima.nutrimaprotogui.Globals;
+import net.nutrima.nutrimaprotogui.R;
 
 
 public class ProfileHabitsFragment extends Fragment {

@@ -1,4 +1,4 @@
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 
 import android.app.Activity;
@@ -14,14 +14,16 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import net.nutrima.engine.UserProfile;
+import net.nutrima.nutrimaprotogui.Globals;
+import net.nutrima.nutrimaprotogui.R;
 
 
-public class ProfileIllnessesFragment extends Fragment {
+public class ProfileAllergiesFragment extends Fragment {
 
-    public ProfileIllnessesFragment() { }
+    public ProfileAllergiesFragment() { }
 
-    public static ProfileIllnessesFragment newInstance() {
-        ProfileIllnessesFragment fragment = new ProfileIllnessesFragment();
+    public static ProfileAllergiesFragment newInstance() {
+        ProfileAllergiesFragment fragment = new ProfileAllergiesFragment();
         //Bundle args = new Bundle();
         //args.putString(ARG_PARAM1, param1);
         //args.putString(ARG_PARAM2, param2);
@@ -37,7 +39,7 @@ public class ProfileIllnessesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_profile_illnesses, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_profile_allergies, container, false);
         handleNextButton(rootView);
         handleBackButton(rootView);
         handleOtherTextBox(rootView);
@@ -45,19 +47,19 @@ public class ProfileIllnessesFragment extends Fragment {
     }
 
     private void handleOtherTextBox(View rootView) {
-        final EditText otherIllnessesEditText = (EditText) rootView.findViewById(R.id.other_illness_editText);
-        CheckBox otherIllnessesCheckBox = (CheckBox) rootView.findViewById(R.id.other_illness_checkBox);
-        otherIllnessesCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final EditText otherAllergiesEditText = (EditText) rootView.findViewById(R.id.other_allergy_editText);
+        CheckBox otherAllergiesCheckBox = (CheckBox) rootView.findViewById(R.id.other_allergy_checkBox);
+        otherAllergiesCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                otherIllnessesEditText.setEnabled(isChecked);
+                otherAllergiesEditText.setEnabled(isChecked);
             }
         });
     }
 
     private void handleNextButton(final View rootView) {
-        Button button= (Button) rootView.findViewById(R.id.next_button);
+        Button button= (Button) rootView.findViewById(R.id.done_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,25 +82,28 @@ public class ProfileIllnessesFragment extends Fragment {
     private void collectDataFromUI(View rootView) {
         UserProfile tempUserProfile = Globals.getInstance().getUserProfile();
 
-        if(((CheckBox) rootView.findViewById(R.id.heart_disease_checkBox)).isChecked())
-            tempUserProfile.setHeartDisease(true);
-        if(((CheckBox) rootView.findViewById(R.id.diabetes_checkBox)).isChecked())
-            tempUserProfile.setDiabetic(true);
-        if(((CheckBox) rootView.findViewById(R.id.kidney_disease_checkBox)).isChecked())
-            tempUserProfile.setKidneyDisease(true);
-        if(((CheckBox) rootView.findViewById(R.id.liver_disease_checkBox)).isChecked())
-            tempUserProfile.setLiverDisease(true);
-        if(((CheckBox) rootView.findViewById(R.id.cancer_disease_checkBox)).isChecked())
-            tempUserProfile.setCancerDisease(true);
-        if(((CheckBox) rootView.findViewById(R.id.hbp_disease_checkBox)).isChecked())
-            tempUserProfile.setHighBloodPressure(true);
-        if(((CheckBox) rootView.findViewById(R.id.celiac_disease_checkBox)).isChecked())
-            tempUserProfile.setCeliacDisease(true);
-        if(((CheckBox) rootView.findViewById(R.id.other_illness_checkBox)).isChecked())
-            if(!isEmpty(((EditText) rootView.findViewById(R.id.other_illness_editText))))
-                tempUserProfile.setOtherDiseases(
-                        ((EditText) rootView.findViewById(R.id.other_illness_editText)).getText().toString());
-        mCallback.onNextClicked(3);
+        if(((CheckBox) rootView.findViewById(R.id.celiac_gluten_allergy_checkBox)).isChecked())
+            tempUserProfile.setGlutenIntorlerance(true);
+        if(((CheckBox) rootView.findViewById(R.id.dairy_allergy_checkBox)).isChecked())
+            tempUserProfile.setDiaryAllergy(true);
+        if(((CheckBox) rootView.findViewById(R.id.egg_allergy_checkBox)).isChecked())
+            tempUserProfile.setEggAllergy(true);
+        if(((CheckBox) rootView.findViewById(R.id.fish_allergy_checkBox)).isChecked())
+            tempUserProfile.setFishAllergy(true);
+        if(((CheckBox) rootView.findViewById(R.id.shellfish_allergy_checkBox)).isChecked())
+            tempUserProfile.setShellfishAllergy(true);
+        if(((CheckBox) rootView.findViewById(R.id.soybeans_allergy_checkBox)).isChecked())
+            tempUserProfile.setSoyAllergy(true);
+        if(((CheckBox) rootView.findViewById(R.id.nuts_allergy_checkBox)).isChecked())
+            tempUserProfile.setNutsAllergy(true);
+        if(((CheckBox) rootView.findViewById(R.id.peanuts_allergy_checkBox)).isChecked())
+            tempUserProfile.setPeanutsAllergy(true);
+        if(((CheckBox) rootView.findViewById(R.id.other_allergy_checkBox)).isChecked())
+            if(!isEmpty(((EditText) rootView.findViewById(R.id.other_allergy_editText))))
+                tempUserProfile.setOtherAllergies(
+                        ((EditText) rootView.findViewById(R.id.other_allergy_editText)).getText().toString());
+
+        mCallback.onNextClicked(4);
     }
 
     private boolean isEmpty(EditText myEditText) {

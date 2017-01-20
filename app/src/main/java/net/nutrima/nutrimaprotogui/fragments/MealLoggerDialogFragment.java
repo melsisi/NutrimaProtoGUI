@@ -1,4 +1,4 @@
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

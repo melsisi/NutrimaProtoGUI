@@ -1,9 +1,8 @@
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -12,16 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import net.nutrima.engine.Gender;
 import net.nutrima.engine.MetricStandard;
 import net.nutrima.engine.UserProfile;
 import net.nutrima.engine.WeightGoal;
+import net.nutrima.nutrimaprotogui.Globals;
+import net.nutrima.nutrimaprotogui.R;
 
 
 public class ProfileMeasurementsFragment extends Fragment {
@@ -203,6 +203,11 @@ public class ProfileMeasurementsFragment extends Fragment {
 
         tempProfile.setWeight(weightInKg);
 
+        // TODO: Handle pregnant and breastfeeding females
+        if(isUserMale == true)
+            tempProfile.setGender(Gender.MALE);
+        else
+            tempProfile.setGender(Gender.FEMALE);
         Globals.getInstance().setUserProfile(tempProfile);
 
         mCallback.onNextClicked(0);

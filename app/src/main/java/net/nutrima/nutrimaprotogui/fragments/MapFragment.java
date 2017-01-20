@@ -1,4 +1,4 @@
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 import android.Manifest;
 import android.app.Activity;
@@ -45,12 +45,17 @@ import net.nutrima.aws.DynamoDBManagerTask;
 import net.nutrima.aws.RestaurantMenuItem;
 import net.nutrima.engine.CurrentMetrics;
 import net.nutrima.engine.MealNutrients;
+import net.nutrima.nutrimaprotogui.Business;
+import net.nutrima.nutrimaprotogui.BusinessDetailsActivity;
+import net.nutrima.nutrimaprotogui.FindHeavyOperations;
+import net.nutrima.nutrimaprotogui.Globals;
+import net.nutrima.nutrimaprotogui.ListMenuItemAdapter;
+import net.nutrima.nutrimaprotogui.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
@@ -94,7 +99,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
      * Constant used in the location settings dialog.
      */
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
-    final static int REQUEST_LOCATION = 199;
+    public final static int REQUEST_LOCATION = 199;
 
     private void checkIfLocationServicesEnabled() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()

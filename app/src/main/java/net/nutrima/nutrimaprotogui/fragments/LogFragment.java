@@ -1,4 +1,4 @@
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -12,6 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import net.nutrima.nutrimaprotogui.Globals;
+import net.nutrima.nutrimaprotogui.LogMealItemAdapter;
+import net.nutrima.nutrimaprotogui.NutritionUSDAEntry;
+import net.nutrima.nutrimaprotogui.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

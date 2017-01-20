@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.nutrima.nutrimaprotogui;
+package net.nutrima.nutrimaprotogui.fragments;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -30,32 +30,52 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.nutrima.aws.RestaurantMenuItem;
+import net.nutrima.nutrimaprotogui.Business;
+import net.nutrima.nutrimaprotogui.Globals;
+import net.nutrima.nutrimaprotogui.R;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * Provides UI for the view with Cards.
+ * Provides UI for the view with List.
  */
-public class CardContentFragment extends Fragment {
+public class ListContentFragment extends Fragment {
+
+    static ContentAdapter adapter;
+    static RecyclerView recyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+        recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // TODO: Only do this after FM has been populated.
+
         return recyclerView;
     }
 
+    public static void refreshListAfterAWS() {
+        adapter = new ContentAdapter(recyclerView.getContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+
+        adapter.notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView picture;
+        public ImageView avator;
+        public TextView name;
         public TextView description;
-        public TextView poster;
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_card, parent, false));
-            picture = (ImageView) itemView.findViewById(R.id.card_image);
-            description = (TextView) itemView.findViewById(R.id.card_text);
-            poster = (TextView) itemView.findViewById(R.id.poster_text);
+            super(inflater.inflate(R.layout.item_list, parent, false));
+            avator = (ImageView) itemView.findViewById(R.id.list_avatar);
+            name = (TextView) itemView.findViewById(R.id.list_title);
+            description = (TextView) itemView.findViewById(R.id.list_desc);
         }
     }
     /**
@@ -63,18 +83,16 @@ public class CardContentFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final int LENGTH = 200;
-        private final String[] cardDesc;
-        private final Drawable[] cardPictures;
+        private static final int LENGTH = Globals.getInstance().getRestaurantFullMenuMap().size();
+        private List<Business> businesses = null;
+        private Map<Business, List<RestaurantMenuItem>> menuMap = null;
+
         public ContentAdapter(Context context) {
-            Resources resources = context.getResources();
-            cardDesc = resources.getStringArray(R.array.card_desc);
-            TypedArray a = resources.obtainTypedArray(R.array.cards_picture);
-            cardPictures = new Drawable[a.length()];
-            for (int i = 0; i < LENGTH; i++) {
-                cardPictures[i] = a.getDrawable(0);
-            }
-            a.recycle();
+            if(Globals.getInstance().getRestaurantFullMenuMap() == null ||
+                    Globals.getInstance().getRestaurantFullMenuMap().size() == 0)
+                return;
+            businesses = new ArrayList<>(Globals.getInstance().getRestaurantFullMenuMap().keySet());
+            menuMap = Globals.getInstance().getRestaurantFullMenuMap();
         }
 
         @Override
@@ -84,9 +102,14 @@ public class CardContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.picture.setImageDrawable(cardPictures[position % cardPictures.length]);
-            holder.description.setText(cardDesc[position % cardDesc.length]);
-            holder.poster.setText("Posted by: Nutrima");
+            if(businesses == null || businesses.size() == 0)
+                return;
+            if(position==0)
+                return;
+            // TODO: Add place image
+            //holder.avator.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
+            holder.name.setText(businesses.get(0).getName());
+            holder.description.setText(businesses.get(0).getAddress());
         }
 
         @Override
@@ -95,4 +118,3 @@ public class CardContentFragment extends Fragment {
         }
     }
 }
-

@@ -7,15 +7,15 @@ package net.nutrima.engine;
 public class CurrentMetrics {
 
     //Calories
-    int calories=0;
+    int calories=-1;
 
     //Macro Nutrients
-    int protein=0;
-    int carbs=0;
-    int fat=0;
-    int satFat=0;
-    int addedsugar=0;
-    int fibers=0;
+    int protein=-1;
+    int carbs=-1;
+    int fat=-1;
+    int satFat=-1;
+    int addedsugar=-1;
+    int fibers=-1;
 
     //Minerals
     int calcium=0; //mg
@@ -45,4 +45,5 @@ public class CurrentMetrics {
 
     //Time in day
     PartOfDay partOfDay= PartOfDay.BEGIN;
+
 }

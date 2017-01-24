@@ -1,6 +1,8 @@
 package net.nutrima.engine;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by ayehia on 9/22/2016.
@@ -83,7 +85,31 @@ public class UserProfile implements Serializable{
     private boolean peanutsAllergy     = false;
     private String otherAllergies      = "";
 
+    //--- Kitchen types ---
+    private ArrayList<Kitchen> kitchens   = new ArrayList<Kitchen>(Arrays.asList(Kitchen.ALL));
+
+    //--- Food types ---
+    private ArrayList<FoodType> foodTypes = new ArrayList<FoodType>(Arrays.asList(FoodType.ALL));
+
+    public boolean isHalal() {
+        return halal;
+    }
+
+    public void setHalal(boolean halal) {
+        this.halal = halal;
+    }
+
+    private boolean halal = false;
+
+
     //--- Setters ---
+    public void setFoodTypes(ArrayList<FoodType> foodTypes) {
+        this.foodTypes = foodTypes;
+    }
+
+    public void setKitchens(ArrayList<Kitchen> kitchens) {
+        this.kitchens = kitchens;
+    }
 
     public void setMetricImperial(MetricStandard metricImperial) {
         this.metricImperial = metricImperial;
@@ -221,7 +247,16 @@ public class UserProfile implements Serializable{
         this.otherAllergies = otherAllergies;
     }
 
+
     //--- Getters ---
+
+    public ArrayList<Kitchen> getKitchens() {
+        return kitchens;
+    }
+
+    public ArrayList<FoodType> getFoodTypes() {
+        return foodTypes;
+    }
 
     public MetricStandard getMetricImperial() {
         return metricImperial;

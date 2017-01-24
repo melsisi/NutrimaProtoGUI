@@ -6,6 +6,7 @@ package net.nutrima.engine;
 
 public class EngineUtils {
 
+    //Calculate calories burnt during exercise
     int GenericCalBurnt (UserProfile userProfile,  int avgHeartRate, int exerciseDuration) {
         if (userProfile == null)
                 return -1;

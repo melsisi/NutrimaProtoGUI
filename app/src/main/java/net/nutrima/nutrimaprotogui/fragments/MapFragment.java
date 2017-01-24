@@ -45,6 +45,7 @@ import net.nutrima.aws.DynamoDBManagerTask;
 import net.nutrima.aws.RestaurantMenuItem;
 import net.nutrima.engine.CurrentMetrics;
 import net.nutrima.engine.MealNutrients;
+import net.nutrima.engine.NutritionFilters;
 import net.nutrima.nutrimaprotogui.Business;
 import net.nutrima.nutrimaprotogui.BusinessDetailsActivity;
 import net.nutrima.nutrimaprotogui.FindHeavyOperations;
@@ -202,9 +203,11 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         Log.d("MAP_FRAGMENT", "awsReadyCallback called after: " + (duration / 1000000) + " milliseconds.");
 
-        MealNutrients mn = new MealNutrients(Globals.getInstance().getNutrimaMetrics(),
+        NutritionFilters nutritionFilters = new NutritionFilters(Globals.getInstance().getUserProfile());
+        MealNutrients mn = new MealNutrients();
+        mn.extractMeals(Globals.getInstance().getNutrimaMetrics(),
                 new CurrentMetrics(),
-                Globals.getInstance().getUserProfile());
+                nutritionFilters);
 
         filterFromEngine(mn);
 
@@ -435,7 +438,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         !tryParseInt(menuItem.getSaturatedFat()) || !tryParseInt(menuItem.getFiber()) ||
                         !tryParseInt(menuItem.getSugar()))
                     continue;
-                if((Integer.parseInt(menuItem.getCalories()) >= mn.calories.min &&
+                /*if((Integer.parseInt(menuItem.getCalories()) >= mn.calories.min &&
                         Integer.parseInt(menuItem.getCalories()) <= mn.calories.max) &&
                         (Integer.parseInt(menuItem.getCarbohydrates()) >= mn.carbs.min &&
                                 Integer.parseInt(menuItem.getCarbohydrates()) <= mn.carbs.max) &&
@@ -450,7 +453,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         (Integer.parseInt(menuItem.getSugar()) >= mn.addedSugar.min &&
                                 Integer.parseInt(menuItem.getSugar()) <= mn.addedSugar.max)) {
                     personalizedMenu.add(menuItem);
-                }
+                }*/
             }
             if(personalizedMenu.size() > 0)
                 personalizedMenus.put(entry.getKey(), personalizedMenu);

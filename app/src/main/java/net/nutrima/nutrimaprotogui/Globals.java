@@ -1,20 +1,10 @@
 package net.nutrima.nutrimaprotogui;
 
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
 
 import net.nutrima.aws.AmazonClientManager;
 import net.nutrima.aws.RestaurantMenuItem;
-import net.nutrima.engine.ActivityLevel;
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.UserProfile;
 
@@ -37,6 +27,8 @@ public class Globals {
     private static int numRunningAWSThreads;
     private static List<String> AWSRestaurants;
     private static Bundle fbResponse;
+
+
 
     public static Globals getInstance() {
         if(ourInstance == null) {
@@ -135,5 +127,24 @@ public class Globals {
                 || Build.MANUFACTURER.contains("Genymotion")
                 || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                 || "google_sdk".equals(Build.PRODUCT);
+    }
+
+    private static Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMapFiltered;
+    private static ArrayList<RestaurantMenuItem> plateNamesPMFiltered;
+
+    public static Map<Business, List<RestaurantMenuItem>> getRestaurantFullMenuMapFiltered() {
+        return restaurantFullMenuMapFiltered;
+    }
+
+    public static void setRestaurantFullMenuMapFiltered(Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMapFiltered) {
+        Globals.restaurantFullMenuMapFiltered = restaurantFullMenuMapFiltered;
+    }
+
+    public static ArrayList<RestaurantMenuItem> getPlateNamesPMFiltered() {
+        return plateNamesPMFiltered;
+    }
+
+    public static void setPlateNamesPMFiltered(ArrayList<RestaurantMenuItem> plateNamesPMFiltered) {
+        Globals.plateNamesPMFiltered = plateNamesPMFiltered;
     }
 }

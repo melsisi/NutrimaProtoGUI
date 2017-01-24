@@ -41,6 +41,9 @@ public class NutritionFilters {
 
     private int numOfMeals;
 
+    private FilterSortOn filtersSorton = FilterSortOn.CALORIES;
+    private boolean ascendingSorting = true;
+
     //--- Kitchen types ---
     private ArrayList<Kitchen> kitchens   = new ArrayList<Kitchen>(Arrays.asList(Kitchen.ALL));
 
@@ -362,5 +365,21 @@ public class NutritionFilters {
 
     public void setNumOfMeals(int numOfMeals) {
         this.numOfMeals = numOfMeals;
+    }
+
+    public FilterSortOn getFiltersSorton() {
+        return filtersSorton;
+    }
+
+    public void setFiltersSorton(FilterSortOn filtersSorton) {
+        this.filtersSorton = filtersSorton;
+    }
+
+    public boolean isAscendingSorting() {
+        return ascendingSorting;
+    }
+
+    public void setAscendingSorting(boolean ascendingSorting) {
+        this.ascendingSorting = ascendingSorting;
     }
 }

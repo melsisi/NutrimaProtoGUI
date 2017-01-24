@@ -6,6 +6,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import net.nutrima.engine.FoodType;
+import net.nutrima.nutrimaprotogui.Business;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,15 @@ public class RestaurantMenuItem {
     private String EggsFree;
     private String Halal;
 
+    public Business getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+
+    private Business business;
 
 
 

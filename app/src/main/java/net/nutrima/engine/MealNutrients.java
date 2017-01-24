@@ -1,10 +1,15 @@
 package net.nutrima.engine;
 
 import net.nutrima.aws.RestaurantMenuItem;
+import net.nutrima.nutrimaprotogui.Business;
+import net.nutrima.nutrimaprotogui.Globals;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ayehia on 9/30/2016.
@@ -27,8 +32,8 @@ public class MealNutrients {
         }
     }
 
-    //TODO: Connect it to BuisnessDetailsActivity.plateNamesPM
-    ArrayList<RestaurantMenuItem> plateNamesPM;
+    private ArrayList<RestaurantMenuItem> plateNamesPM = new ArrayList<> ();
+    Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMapFiltered;
 
     public void filterMenuItemsUserPref (ArrayList<RestaurantMenuItem> plateNamesPM, NutritionFilters nutritionFilters){
         MaxMinNutrients calories = new MaxMinNutrients(-1,Integer.MAX_VALUE, nutritionFilters.calories.selected);
@@ -130,9 +135,10 @@ public class MealNutrients {
     }
 
     //Constructor: Takes user profile, and current macro nutrients data, and the Nutrima recommended metrics
-    public void extractMeals(NutrimaMetrics nutrimaMetrics, CurrentMetrics currentMetrics,
-                             NutritionFilters nutritionFilters) {
-        //TODO: handling nutritionFilters is NULL
+    public void extractMeals(NutrimaMetrics nutrimaMetrics,
+                             CurrentMetrics currentMetrics, NutritionFilters nutritionFilters)
+    {
+        //TODO: handling nutritionFilters when NULL
 
         //Maximum daily allowance remaining
         int calMax        = (int) (nutrimaMetrics.getCalNutrima() - currentMetrics.calories);
@@ -152,6 +158,20 @@ public class MealNutrients {
         int satFatMeal   = (int) (nutrimaMetrics.getSatFatNutrima() / nutritionFilters.getNumOfMeals());
         int fiberMeal    = (int) (nutrimaMetrics.getDietaryFiberNutrima() / nutritionFilters.getNumOfMeals());
         int addedSugarMeal = (int) (nutrimaMetrics.getAddedSugarNutrima() / nutritionFilters.getNumOfMeals());
+
+        //Construct the plateNamesPM
+        Map<Business, List<RestaurantMenuItem>> map = Globals.getInstance().getRestaurantFullMenuMap();
+        Iterator<Map.Entry<Business, List<RestaurantMenuItem>>> it = map.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry<Business, List<RestaurantMenuItem>> pair = it.next();
+            ArrayList<RestaurantMenuItem> temp = (ArrayList<RestaurantMenuItem>) pair.getValue();
+            for (RestaurantMenuItem mi: temp) {
+                mi.setBusiness(pair.getKey());
+            }
+            plateNamesPM.addAll(temp);
+        }
+
 
         //Methodology:
         //1: Sort items according to user preferences
@@ -186,12 +206,152 @@ public class MealNutrients {
         //  c. For items that will not fit sort them and provide soft recommendations if in the middle or early day
         //  Or hard recommendations if the end of the day or diseases
 
-        //Sort the menu items in ascending order according to the calories
-        Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
-            @Override public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                return (Integer.parseInt(p1.getCalories()) - Integer.parseInt(p2.getCalories()));
-            }
-        });
+        //Sort the menu items in ascending order according to the user selection (default sort on calories)
+        switch (nutritionFilters.getFiltersSorton()) {
+            case CALORIES:
+                if (nutritionFilters.isAscendingSorting()) {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p1.getCalories())) - (Integer.parseInt(p2.getCalories())));
+                        }
+                    });
+                } else {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p2.getCalories())) - (Integer.parseInt(p1.getCalories())));
+                        }
+                    });
+                }
+                break;
+
+            case PROTEIN:
+                if (nutritionFilters.isAscendingSorting()) {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p1.getProtein())) - (Integer.parseInt(p2.getProtein())));
+                        }
+                    });
+                } else {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p2.getProtein())) - (Integer.parseInt(p1.getProtein())));
+                        }
+                    });
+                }
+                break;
+
+            case CARBS:
+                if (nutritionFilters.isAscendingSorting()) {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p1.getCarbohydrates())) - (Integer.parseInt(p2.getCarbohydrates())));
+                        }
+                    });
+                } else {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p2.getCarbohydrates())) - (Integer.parseInt(p1.getCarbohydrates())));
+                        }
+                    });
+                }
+                break;
+
+            case FAT:
+                if (nutritionFilters.isAscendingSorting()) {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p1.getTotalFat())) - (Integer.parseInt(p2.getTotalFat())));
+                        }
+                    });
+                } else {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p2.getTotalFat())) - (Integer.parseInt(p1.getTotalFat())));
+                        }
+                    });
+                }
+                break;
+
+            case SATFAT:
+                if (nutritionFilters.isAscendingSorting()) {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p1.getSaturatedFat())) - (Integer.parseInt(p2.getSaturatedFat())));
+                        }
+                    });
+                } else {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p2.getSaturatedFat())) - (Integer.parseInt(p1.getSaturatedFat())));
+                        }
+                    });
+                }
+                break;
+
+            case ADDEDSUGAR:
+                if (nutritionFilters.isAscendingSorting()) {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p1.getSugar())) - (Integer.parseInt(p2.getSugar())));
+                        }
+                    });
+                } else {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p2.getSugar())) - (Integer.parseInt(p1.getSugar())));
+                        }
+                    });
+                }
+                break;
+
+            case FIBER:
+                if (nutritionFilters.isAscendingSorting()) {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p1.getFiber())) - (Integer.parseInt(p2.getFiber())));
+                        }
+                    });
+                } else {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p2.getFiber())) - (Integer.parseInt(p1.getFiber())));
+                        }
+                    });
+                }
+                break;
+
+            default:
+                if (nutritionFilters.isAscendingSorting()) {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p1.getCalories())) - (Integer.parseInt(p2.getCalories())));
+                        }
+                    });
+                } else {
+                    Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
+                        @Override
+                        public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
+                            return ((Integer.parseInt(p2.getCalories())) - (Integer.parseInt(p1.getCalories())));
+                        }
+                    });
+                }
+                break;
+        }
 
         int tempCalories = computeMaxMin (MaxMin.MIN, calMax, (int) (nutritionFilters.calories.selected));
         for (RestaurantMenuItem mi : plateNamesPM) {
@@ -212,6 +372,9 @@ public class MealNutrients {
                 mi.addRecommendations("Eat 1/2 the item!");
             }
         }
+        Globals.getInstance().setPlateNamesPMFiltered(plateNamesPM);
 
+
+        //--x--Globals.getInstance().setRestaurantFullMenuMapFiltered(restaurantFullMenuMapFiltered);
     }
 }

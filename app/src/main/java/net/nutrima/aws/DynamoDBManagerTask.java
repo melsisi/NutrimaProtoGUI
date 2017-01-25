@@ -22,7 +22,7 @@ public class DynamoDBManagerTask extends
             Business... business) {
 
         Log.d("DynamoDBManagerTask", "Start business name: " + business[0].getName());
-        List<RestaurantMenuItem> toReturn = new ArrayList<>();
+        List<RestaurantMenuItem> toReturn;
 
         //String tableStatus = DynamoDBManager.getTestTableStatus();
 

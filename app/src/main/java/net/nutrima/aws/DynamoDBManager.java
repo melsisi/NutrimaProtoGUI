@@ -7,6 +7,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DescribeTableResult;
@@ -16,6 +17,7 @@ import net.nutrima.nutrimaprotogui.Globals;
 import net.nutrima.nutrimaprotogui.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +56,7 @@ public class DynamoDBManager {
     /*
      * Retrieves all of the attribute/value pairs for the specified restaurant.
      */
-    public static List<RestaurantMenuItem> getMenuForRestaurant(String restaurant) {
+    public static ArrayList<RestaurantMenuItem> getMenuForRestaurant(String restaurant) {
 
         AmazonDynamoDBClient ddb = Globals.getInstance().getClientManager().ddb();
         DynamoDBMapper mapper = new DynamoDBMapper(ddb);
@@ -68,7 +70,9 @@ public class DynamoDBManager {
 
         try {
             long startTime = System.nanoTime();
-            List<RestaurantMenuItem> latestReplies = mapper.query(RestaurantMenuItem.class, queryExpression);
+            ArrayList<RestaurantMenuItem> latestReplies = paginatedQueryListToArrayList(
+                    mapper.query(RestaurantMenuItem.class, queryExpression));
+
             long endTime = System.nanoTime();
 
             long duration = (endTime - startTime);
@@ -84,4 +88,12 @@ public class DynamoDBManager {
         return null;
     }
 
+    private static ArrayList<RestaurantMenuItem> paginatedQueryListToArrayList(
+            PaginatedQueryList<RestaurantMenuItem> menuItemPaginatedQueryList) {
+        ArrayList<RestaurantMenuItem> toReturn = new ArrayList<>();
+        for(RestaurantMenuItem mi : menuItemPaginatedQueryList) {
+            toReturn.add(mi);
+        }
+        return toReturn;
+    }
 }

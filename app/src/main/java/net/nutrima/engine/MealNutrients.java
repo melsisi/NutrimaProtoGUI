@@ -7,6 +7,7 @@ import net.nutrima.nutrimaprotogui.Globals;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class MealNutrients {
     }
 
     private ArrayList<RestaurantMenuItem> plateNamesPM = new ArrayList<> ();
-    Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMapFiltered;
+    Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMapFiltered =   new  HashMap<Business, List<RestaurantMenuItem>>();
 
     public void filterMenuItemsUserPref (ArrayList<RestaurantMenuItem> plateNamesPM, NutritionFilters nutritionFilters){
         MaxMinNutrients calories = new MaxMinNutrients(-1,Integer.MAX_VALUE, nutritionFilters.calories.selected);
@@ -379,9 +380,20 @@ public class MealNutrients {
                 mi.addRecommendations("Eat 1/2 the item!");
             }
         }
+
         Globals.getInstance().setPlateNamesPMFiltered(plateNamesPM);
 
-
-        //--x--Globals.getInstance().setRestaurantFullMenuMapFiltered(restaurantFullMenuMapFiltered);
+        for (RestaurantMenuItem mi : plateNamesPM) {
+            if (restaurantFullMenuMapFiltered.containsKey(mi.getBusiness())) {
+                //ArrayList<RestaurantMenuItem> temp = (ArrayList<RestaurantMenuItem>) restaurantFullMenuMapFiltered.get(mi.getBusiness());
+                //temp.add(mi);
+                restaurantFullMenuMapFiltered.get(mi.getBusiness()).add(mi);
+            } else {
+                ArrayList<RestaurantMenuItem> temp = new ArrayList<>();
+                temp.add(mi);
+                restaurantFullMenuMapFiltered.put(mi.getBusiness(), temp);
+            }
+        }
+        Globals.getInstance().setRestaurantFullMenuMapFiltered(restaurantFullMenuMapFiltered);
     }
 }

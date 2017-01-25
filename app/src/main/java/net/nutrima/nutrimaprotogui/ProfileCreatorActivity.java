@@ -93,9 +93,9 @@ public class ProfileCreatorActivity extends FragmentActivity
 
         }
         else if(currentPosition == 5) {
-            NutrimaMetrics nutrimaMetrics = new NutrimaMetrics();
-            nutrimaMetrics.calcNutrima(Globals.getInstance().getUserProfile());
-            Globals.getInstance().setNutrimaMetrics(nutrimaMetrics);
+            //NutrimaMetrics nutrimaMetrics = new NutrimaMetrics();
+            //nutrimaMetrics.calcNutrima(Globals.getInstance().getUserProfile());
+            //Globals.getInstance().setNutrimaMetrics(nutrimaMetrics);
             saveDataToStorage(Globals.getInstance().getUserProfile());
             new Handler().postDelayed(new Runnable(){
                 @Override

@@ -309,22 +309,25 @@ public class RestaurantMenuItem {
 
     // TODO: Sync with AWS table
 
-    //@DynamoDBAttribute(attributeName = "FoodCategory")
+    @DynamoDBAttribute(attributeName = "FoodCategory")
     public String getFoodCategory() {return FoodCategory; }
 
     public void setFoodCategory(String foodCategory) {
         FoodCategory = foodCategory;
         switch (foodCategory) {
-            case "ALL": foodCategory_e = FoodType.ALL; break;
-            case "FAST_FOOD":foodCategory_e = FoodType.FAST_FOOD; break;
-            case "PLATE":foodCategory_e = FoodType.ENTREE; break;
-            case "SANDWICH":foodCategory_e = FoodType.SANDWICH; break;
-            case "PASTA":foodCategory_e = FoodType.PASTA; break;
-            case "PIZZA":foodCategory_e = FoodType.PIZZA; break;
-            case "HEALTHY":foodCategory_e = FoodType.HEALTHY; break;
-            case "BEVERAGE":foodCategory_e = FoodType.BEVERAGE; break;
-            case "DESSERT":foodCategory_e = FoodType.DESSERT; break;
-            case "APPETIZER":foodCategory_e = FoodType.APPETIZER; break;
+            case "Appetizers & Sides":foodCategory_e = FoodType.APPETIZER; break;
+            case "Baked Goods":foodCategory_e = FoodType.BAKED_GOODS; break;
+            case "Beverages":foodCategory_e = FoodType.BEVERAGE; break;
+            case "Burgers":foodCategory_e = FoodType.FAST_FOOD; break;
+            case "Entrees":foodCategory_e = FoodType.ENTREE; break;
+            case "Fried Potatoes":foodCategory_e = FoodType.FAST_FOOD; break;
+            case "Salads":foodCategory_e = FoodType.SALAD; break;
+            case "Sandwiches":foodCategory_e = FoodType.SANDWICH; break;
+            case "Pizza":foodCategory_e = FoodType.PIZZA; break;
+            case "Desserts":foodCategory_e = FoodType.DESSERT; break;
+            case "Soup":foodCategory_e = FoodType.SOUP; break;
+            case "Toppings & Ingredients":foodCategory_e = FoodType.TOPPING; break;
+            case "Pasta":foodCategory_e = FoodType.PASTA; break;
             default:foodCategory_e = FoodType.ALL; break;
         }
     }

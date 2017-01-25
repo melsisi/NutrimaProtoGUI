@@ -101,26 +101,26 @@ public class MealNutrients {
             }
             top.add(mi);
 
-            calories.max = computeMaxMin(MaxMin.MAX, calories.max, Integer.parseInt(mi.getCalories()));
-            calories.min = computeMaxMin(MaxMin.MIN, calories.min, Integer.parseInt(mi.getCalories()));
+            calories.max = computeMaxMin(MaxMin.MAX, calories.max, (int) Float.parseFloat(mi.getCalories()));
+            calories.min = computeMaxMin(MaxMin.MIN, calories.min, (int) Float.parseFloat(mi.getCalories()));
 
-            protein.max = computeMaxMin(MaxMin.MAX, protein.max, Integer.parseInt(mi.getProtein()));
-            protein.min = computeMaxMin(MaxMin.MIN, protein.min, Integer.parseInt(mi.getProtein()));
+            protein.max = computeMaxMin(MaxMin.MAX, protein.max, (int) Float.parseFloat(mi.getProtein()));
+            protein.min = computeMaxMin(MaxMin.MIN, protein.min, (int) Float.parseFloat(mi.getProtein()));
 
-            carbs.max = computeMaxMin(MaxMin.MAX, carbs.max, Integer.parseInt(mi.getCarbohydrates()));
-            carbs.min = computeMaxMin(MaxMin.MIN, carbs.min, Integer.parseInt(mi.getCarbohydrates()));
+            carbs.max = computeMaxMin(MaxMin.MAX, carbs.max, (int) Float.parseFloat(mi.getCarbohydrates()));
+            carbs.min = computeMaxMin(MaxMin.MIN, carbs.min, (int) Float.parseFloat(mi.getCarbohydrates()));
 
-            fat.max = computeMaxMin(MaxMin.MAX, fat.max, Integer.parseInt(mi.getTotalFat()));
-            fat.min = computeMaxMin(MaxMin.MIN, fat.min, Integer.parseInt(mi.getTotalFat()));
+            fat.max = computeMaxMin(MaxMin.MAX, fat.max, (int) Float.parseFloat(mi.getTotalFat()));
+            fat.min = computeMaxMin(MaxMin.MIN, fat.min, (int) Float.parseFloat(mi.getTotalFat()));
 
-            satFat.max = computeMaxMin(MaxMin.MAX, satFat.max, Integer.parseInt(mi.getSaturatedFat()));
-            satFat.min = computeMaxMin(MaxMin.MIN, satFat.min, Integer.parseInt(mi.getSaturatedFat()));
+            satFat.max = computeMaxMin(MaxMin.MAX, satFat.max, (int) Float.parseFloat(mi.getSaturatedFat()));
+            satFat.min = computeMaxMin(MaxMin.MIN, satFat.min, (int) Float.parseFloat(mi.getSaturatedFat()));
 
-            fiber.max = computeMaxMin(MaxMin.MAX, fiber.max, Integer.parseInt(mi.getFiber()));
-            fiber.min = computeMaxMin(MaxMin.MIN, fiber.min, Integer.parseInt(mi.getFiber()));
+            fiber.max = computeMaxMin(MaxMin.MAX, fiber.max, (int) Float.parseFloat(mi.getFiber()));
+            fiber.min = computeMaxMin(MaxMin.MIN, fiber.min, (int) Float.parseFloat(mi.getFiber()));
 
-            addedSugar.max = computeMaxMin(MaxMin.MAX, addedSugar.max, Integer.parseInt(mi.getSugar()));
-            addedSugar.min = computeMaxMin(MaxMin.MIN, addedSugar.min, Integer.parseInt(mi.getSugar()));
+            addedSugar.max = computeMaxMin(MaxMin.MAX, addedSugar.max, (int) Float.parseFloat(mi.getSugar()));
+            addedSugar.min = computeMaxMin(MaxMin.MIN, addedSugar.min, (int) Float.parseFloat(mi.getSugar()));
         }
         plateNamesPM.clear();
         plateNamesPM.addAll(top);
@@ -213,14 +213,14 @@ public class MealNutrients {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p1.getCalories())) - (Integer.parseInt(p2.getCalories())));
+                            return (((int) Float.parseFloat(p1.getCalories())) - ((int) Float.parseFloat(p2.getCalories())));
                         }
                     });
                 } else {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p2.getCalories())) - (Integer.parseInt(p1.getCalories())));
+                            return (((int) Float.parseFloat(p2.getCalories())) - ((int) Float.parseFloat(p1.getCalories())));
                         }
                     });
                 }
@@ -231,14 +231,14 @@ public class MealNutrients {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p1.getProtein())) - (Integer.parseInt(p2.getProtein())));
+                            return (((int) Float.parseFloat(p1.getProtein())) - ((int) Float.parseFloat(p2.getProtein())));
                         }
                     });
                 } else {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p2.getProtein())) - (Integer.parseInt(p1.getProtein())));
+                            return (((int) Float.parseFloat(p2.getProtein())) - ((int) Float.parseFloat(p1.getProtein())));
                         }
                     });
                 }
@@ -249,14 +249,14 @@ public class MealNutrients {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p1.getCarbohydrates())) - (Integer.parseInt(p2.getCarbohydrates())));
+                            return (((int) Float.parseFloat(p1.getCarbohydrates())) - ((int) Float.parseFloat(p2.getCarbohydrates())));
                         }
                     });
                 } else {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p2.getCarbohydrates())) - (Integer.parseInt(p1.getCarbohydrates())));
+                            return (((int) Float.parseFloat(p2.getCarbohydrates())) - ((int) Float.parseFloat(p1.getCarbohydrates())));
                         }
                     });
                 }
@@ -267,14 +267,14 @@ public class MealNutrients {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p1.getTotalFat())) - (Integer.parseInt(p2.getTotalFat())));
+                            return (((int) Float.parseFloat(p1.getTotalFat())) - ((int) Float.parseFloat(p2.getTotalFat())));
                         }
                     });
                 } else {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p2.getTotalFat())) - (Integer.parseInt(p1.getTotalFat())));
+                            return (((int) Float.parseFloat(p2.getTotalFat())) - ((int) Float.parseFloat(p1.getTotalFat())));
                         }
                     });
                 }
@@ -285,14 +285,14 @@ public class MealNutrients {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p1.getSaturatedFat())) - (Integer.parseInt(p2.getSaturatedFat())));
+                            return (((int) Float.parseFloat(p1.getSaturatedFat())) - ((int) Float.parseFloat(p2.getSaturatedFat())));
                         }
                     });
                 } else {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p2.getSaturatedFat())) - (Integer.parseInt(p1.getSaturatedFat())));
+                            return (((int) Float.parseFloat(p2.getSaturatedFat())) - ((int) Float.parseFloat(p1.getSaturatedFat())));
                         }
                     });
                 }
@@ -303,14 +303,14 @@ public class MealNutrients {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p1.getSugar())) - (Integer.parseInt(p2.getSugar())));
+                            return (((int) Float.parseFloat(p1.getSugar())) - ((int) Float.parseFloat(p2.getSugar())));
                         }
                     });
                 } else {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p2.getSugar())) - (Integer.parseInt(p1.getSugar())));
+                            return (((int) Float.parseFloat(p2.getSugar())) - ((int) Float.parseFloat(p1.getSugar())));
                         }
                     });
                 }
@@ -321,14 +321,14 @@ public class MealNutrients {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p1.getFiber())) - (Integer.parseInt(p2.getFiber())));
+                            return (((int) Float.parseFloat(p1.getFiber())) - ((int) Float.parseFloat(p2.getFiber())));
                         }
                     });
                 } else {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p2.getFiber())) - (Integer.parseInt(p1.getFiber())));
+                            return (((int) Float.parseFloat(p2.getFiber())) - ((int) Float.parseFloat(p1.getFiber())));
                         }
                     });
                 }
@@ -339,14 +339,14 @@ public class MealNutrients {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p1.getCalories())) - (Integer.parseInt(p2.getCalories())));
+                            return (((int) Float.parseFloat(p1.getCalories())) - ((int) Float.parseFloat(p2.getCalories())));
                         }
                     });
                 } else {
                     Collections.sort(plateNamesPM, new Comparator<RestaurantMenuItem>() {
                         @Override
                         public int compare(RestaurantMenuItem p1, RestaurantMenuItem p2) {
-                            return ((Integer.parseInt(p2.getCalories())) - (Integer.parseInt(p1.getCalories())));
+                            return (((int) Float.parseFloat(p2.getCalories())) - ((int) Float.parseFloat(p1.getCalories())));
                         }
                     });
                 }
@@ -355,19 +355,19 @@ public class MealNutrients {
 
         int tempCalories = computeMaxMin (MaxMin.MIN, calMax, (int) (nutritionFilters.calories.selected));
         for (RestaurantMenuItem mi : plateNamesPM) {
-            if (Integer.parseInt(mi.getCalories()) <= tempCalories) {
+            if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories) {
                 //Calories match
 
-            } else if (Integer.parseInt(mi.getCalories()) <= tempCalories * 1.333) {
+            } else if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories * 1.333) {
                 //Calories recommendation
                 mi.addRecommendations("Eat 3/4 the item!");
             }
 
-            else if (Integer.parseInt(mi.getCalories()) <= tempCalories * 1.5) {
+            else if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories * 1.5) {
                 //Calories recommendation
                 mi.addRecommendations("Eat 2/3 the item!");
             }
-            else if (Integer.parseInt(mi.getCalories()) <= tempCalories * 2) {
+            else if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories * 2) {
                 //Calories recommendation
                 mi.addRecommendations("Eat 1/2 the item!");
             }

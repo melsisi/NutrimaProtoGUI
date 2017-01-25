@@ -220,56 +220,7 @@ public class SimpleMainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        // Populate info from file ///////////////////////////////////////
-        UserProfile savedUserProfile = readDataFromFile();
-        if(savedUserProfile == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setMessage("You need to provide us some info to get started.")
-                    .setTitle("Oops");
-
-            builder.setPositiveButton("Add now", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Intent activityChangeIntent = new Intent(SimpleMainActivity.this,
-                            ProfileCreatorActivity.class);
-                            //PersonalInfoActivity.class);
-                    startActivity(activityChangeIntent);
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-        }
-        //////////////////////////////////////////////////////////////////
-
         findViewById(R.id.initial_loading_progress).setVisibility(View.GONE);
-    }
-
-    // TODO: Move this somewhere else
-    @Nullable
-    public UserProfile readDataFromFile() {
-        UserProfile userProfile = null;
-
-        try {
-            FileInputStream fis = openFileInput(getString(R.string.profile_data_file_name));
-            ObjectInputStream is = null;
-
-            is = new ObjectInputStream(fis);
-
-            userProfile = (UserProfile) is.readObject();
-            is.close();
-            fis.close();
-        } catch (IOException e) {
-            return null;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        NutrimaMetrics nutrimaMetrics = new NutrimaMetrics();
-        nutrimaMetrics.calcNutrima(userProfile);
-        Globals.getInstance().setNutrimaMetrics(nutrimaMetrics);
-        Globals.getInstance().setUserProfile(userProfile);
-        return userProfile;
     }
 
     // Add Fragments to Tabs

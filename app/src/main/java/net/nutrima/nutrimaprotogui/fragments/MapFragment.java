@@ -2,6 +2,7 @@ package net.nutrima.nutrimaprotogui.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,14 +47,21 @@ import net.nutrima.aws.DynamoDBManagerTask;
 import net.nutrima.aws.RestaurantMenuItem;
 import net.nutrima.engine.CurrentMetrics;
 import net.nutrima.engine.MealNutrients;
+import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.NutritionFilters;
+import net.nutrima.engine.UserProfile;
 import net.nutrima.nutrimaprotogui.Business;
 import net.nutrima.nutrimaprotogui.BusinessDetailsActivity;
 import net.nutrima.nutrimaprotogui.FindHeavyOperations;
 import net.nutrima.nutrimaprotogui.Globals;
 import net.nutrima.nutrimaprotogui.ListMenuItemAdapter;
+import net.nutrima.nutrimaprotogui.ProfileCreatorActivity;
 import net.nutrima.nutrimaprotogui.R;
+import net.nutrima.nutrimaprotogui.SimpleMainActivity;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -206,6 +215,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         NutritionFilters nutritionFilters = new NutritionFilters(Globals.getInstance().getUserProfile());
         MealNutrients mn = new MealNutrients();
         mn.extractMeals(Globals.getInstance().getNutrimaMetrics(),
+                // TODO: Fill from log
                 new CurrentMetrics(),
                 nutritionFilters);
 
@@ -246,6 +256,31 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
+        rootView = inflater.inflate(R.layout.activity_map, container, false);
+
+        // Populate info from file ///////////////////////////////////////
+        UserProfile savedUserProfile = readDataFromFile();
+        if(savedUserProfile == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            builder.setMessage("You need to provide us some info to get started.")
+                    .setTitle("Oops");
+
+            builder.setPositiveButton("Add now", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent activityChangeIntent = new Intent(getActivity(),
+                            ProfileCreatorActivity.class);
+                    //PersonalInfoActivity.class);
+                    startActivity(activityChangeIntent);
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            return rootView;
+        }
+        //////////////////////////////////////////////////////////////////
+
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .enableAutoManage(getActivity(), 0, this)
                 .addApi(LocationServices.API)
@@ -254,8 +289,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-
-        rootView = inflater.inflate(R.layout.activity_map, container, false);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
@@ -288,6 +321,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         });
         markerClicked = false;
         businessOkFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.medium_grey)));
+
         return rootView;
     }
 
@@ -600,5 +634,32 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    // TODO: Move this somewhere else
+    @Nullable
+    public UserProfile readDataFromFile() {
+        UserProfile userProfile = null;
+
+        try {
+            FileInputStream fis = getActivity().openFileInput(getString(R.string.profile_data_file_name));
+            ObjectInputStream is = null;
+
+            is = new ObjectInputStream(fis);
+
+            userProfile = (UserProfile) is.readObject();
+            is.close();
+            fis.close();
+        } catch (IOException e) {
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //NutrimaMetrics nutrimaMetrics = new NutrimaMetrics();
+        //nutrimaMetrics.calcNutrima(userProfile);
+        //Globals.getInstance().setNutrimaMetrics(nutrimaMetrics);
+        Globals.getInstance().setUserProfile(userProfile);
+        return userProfile;
     }
 }

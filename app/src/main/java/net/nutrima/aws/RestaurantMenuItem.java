@@ -7,6 +7,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import net.nutrima.engine.FoodType;
 import net.nutrima.nutrimaprotogui.Business;
+import net.nutrima.engine.Kitchen;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 public class RestaurantMenuItem {
 
     private String Restaurant;
-    private String FoodCategory;
     private String ItemName;
     private String ItemDescription;
     private String ServingsPerItem;
@@ -56,98 +56,6 @@ public class RestaurantMenuItem {
 
     private Business business;
 
-
-
-    //--x-- Added by Ahmed
-    private FoodType foodCategory_e;
-    private String Kitchen;
-    private net.nutrima.engine.Kitchen kitchen_e;
-    private ArrayList <String> recommendations = new ArrayList<String> ();
-
-
-    @DynamoDBAttribute(attributeName = "FoodCategory")
-    public void setFoodCategory(String foodCategory) {
-        FoodCategory = foodCategory;
-        switch (foodCategory) {
-            case "ALL": foodCategory_e = FoodType.ALL; break;
-            case "FAST_FOOD":foodCategory_e = FoodType.FAST_FOOD; break;
-            case "PLATE":foodCategory_e = FoodType.ENTREE; break;
-            case "SANDWICH":foodCategory_e = FoodType.SANDWICH; break;
-            case "PASTA":foodCategory_e = FoodType.PASTA; break;
-            case "PIZZA":foodCategory_e = FoodType.PIZZA; break;
-            case "HEALTHY":foodCategory_e = FoodType.HEALTHY; break;
-            case "BEVERAGE":foodCategory_e = FoodType.BEVERAGE; break;
-            case "DESSERT":foodCategory_e = FoodType.DESSERT; break;
-            case "APPETIZER":foodCategory_e = FoodType.APPETIZER; break;
-            default:foodCategory_e = FoodType.ALL; break;
-        }
-    }
-    public FoodType getFoodCategory_e() {
-        return foodCategory_e;
-    }
-
-    @DynamoDBHashKey(attributeName = "Kitchen")
-    public String getKitchen() {
-        return Kitchen;
-    }
-    @DynamoDBHashKey(attributeName = "Kitchen")
-    public void setKitchen(String kitchen) {
-        Kitchen = kitchen;
-        switch (kitchen) {
-            case "ALL":
-                kitchen_e = net.nutrima.engine.Kitchen.ALL;
-                break;
-            case "EGYPTIAN":
-                kitchen_e = net.nutrima.engine.Kitchen.EGYPTIAN;
-                break;
-            case "ARABIC":
-                kitchen_e = net.nutrima.engine.Kitchen.ARABIC;
-                break;
-            case "MIDDLE_EASTERN":
-                kitchen_e = net.nutrima.engine.Kitchen.MIDDLE_EASTERN;
-                break;
-            case "INDIAN":
-                kitchen_e = net.nutrima.engine.Kitchen.INDIAN;
-                break;
-            case "CHINESE":
-                kitchen_e = net.nutrima.engine.Kitchen.CHINESE;
-                break;
-            case "KOREAN":
-                kitchen_e = net.nutrima.engine.Kitchen.KOREAN;
-                break;
-            case "JAPANESE":
-                kitchen_e = net.nutrima.engine.Kitchen.JAPANESE;
-                break;
-            case "FAST_FOOD":
-                kitchen_e = net.nutrima.engine.Kitchen.FAST_FOOD;
-                break;
-            case "ITALIAN":
-                kitchen_e = net.nutrima.engine.Kitchen.ITALIAN;
-                break;
-            case "FRENCH":
-                kitchen_e = net.nutrima.engine.Kitchen.FRENCH;
-                break;
-            case "ASIAN":
-                kitchen_e = net.nutrima.engine.Kitchen.ASIAN;
-                break;
-            default:
-                kitchen_e = net.nutrima.engine.Kitchen.ALL;
-                break;
-        }
-    }
-    public net.nutrima.engine.Kitchen getKitchen_e() {
-        return kitchen_e;
-    }
-
-    public void addRecommendations(String s) {
-        this.recommendations.add(s);
-    }
-    public ArrayList<String> getRecommendations() {
-        return recommendations;
-    }
-    //--x--
-
-
     @DynamoDBHashKey(attributeName = "Restaurant")
     public String getRestaurant() {
         return Restaurant;
@@ -165,12 +73,6 @@ public class RestaurantMenuItem {
     public void setItemName(String itemName) {
         ItemName = itemName;
     }
-
-    @DynamoDBAttribute(attributeName = "FoodCategory")
-    public String getFoodCategory() {
-        return FoodCategory;
-    }
-
 
     @DynamoDBAttribute(attributeName = "ItemDescription")
     public String getItemDescription() {
@@ -397,4 +299,99 @@ public class RestaurantMenuItem {
         Halal = halal;
     }
 
+    //--x-- Added by Ahmed
+    private String FoodCategory;
+    private FoodType foodCategory_e;
+    private String Kitchen;
+    private Kitchen kitchen_e;
+    private ArrayList <String> recommendations = new ArrayList<> ();
+
+
+    // TODO: Sync with AWS table
+
+    //@DynamoDBAttribute(attributeName = "FoodCategory")
+    public String getFoodCategory() {return FoodCategory; }
+
+    public void setFoodCategory(String foodCategory) {
+        FoodCategory = foodCategory;
+        switch (foodCategory) {
+            case "ALL": foodCategory_e = FoodType.ALL; break;
+            case "FAST_FOOD":foodCategory_e = FoodType.FAST_FOOD; break;
+            case "PLATE":foodCategory_e = FoodType.ENTREE; break;
+            case "SANDWICH":foodCategory_e = FoodType.SANDWICH; break;
+            case "PASTA":foodCategory_e = FoodType.PASTA; break;
+            case "PIZZA":foodCategory_e = FoodType.PIZZA; break;
+            case "HEALTHY":foodCategory_e = FoodType.HEALTHY; break;
+            case "BEVERAGE":foodCategory_e = FoodType.BEVERAGE; break;
+            case "DESSERT":foodCategory_e = FoodType.DESSERT; break;
+            case "APPETIZER":foodCategory_e = FoodType.APPETIZER; break;
+            default:foodCategory_e = FoodType.ALL; break;
+        }
+    }
+
+    public FoodType getFoodCategory_e() {
+        return foodCategory_e;
+    }
+
+    //@DynamoDBAttribute(attributeName = "Kitchen")
+    public String getKitchen() {
+        return Kitchen;
+    }
+
+    public void setKitchen(String kitchen) {
+        this.Kitchen = kitchen;
+        switch (kitchen) {
+            case "ALL":
+                kitchen_e = net.nutrima.engine.Kitchen.ALL;
+                break;
+            case "EGYPTIAN":
+                kitchen_e = net.nutrima.engine.Kitchen.EGYPTIAN;
+                break;
+            case "ARABIC":
+                kitchen_e = net.nutrima.engine.Kitchen.ARABIC;
+                break;
+            case "MIDDLE_EASTERN":
+                kitchen_e = net.nutrima.engine.Kitchen.MIDDLE_EASTERN;
+                break;
+            case "INDIAN":
+                kitchen_e = net.nutrima.engine.Kitchen.INDIAN;
+                break;
+            case "CHINESE":
+                kitchen_e = net.nutrima.engine.Kitchen.CHINESE;
+                break;
+            case "KOREAN":
+                kitchen_e = net.nutrima.engine.Kitchen.KOREAN;
+                break;
+            case "JAPANESE":
+                kitchen_e = net.nutrima.engine.Kitchen.JAPANESE;
+                break;
+            case "FAST_FOOD":
+                kitchen_e = net.nutrima.engine.Kitchen.FAST_FOOD;
+                break;
+            case "ITALIAN":
+                kitchen_e = net.nutrima.engine.Kitchen.ITALIAN;
+                break;
+            case "FRENCH":
+                kitchen_e = net.nutrima.engine.Kitchen.FRENCH;
+                break;
+            case "ASIAN":
+                kitchen_e = net.nutrima.engine.Kitchen.ASIAN;
+                break;
+            default:
+                kitchen_e = net.nutrima.engine.Kitchen.ALL;
+                break;
+        }
+    }
+
+    public Kitchen getKitchen_e() {
+        return kitchen_e;
+    }
+
+    public void addRecommendations(String s) {
+        this.recommendations.add(s);
+    }
+    public ArrayList<String> getRecommendations() {
+        return recommendations;
+    }
+    //--x--
 }

@@ -138,7 +138,7 @@
                     android:text="Done"
                     android:id="@+id/done_button"
                     style="@style/Base.Widget.AppCompat.ActionButton"
-                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:fontFamily="sans-serif-thin"
                     android:textSize="20dp"/>
@@ -149,7 +149,7 @@
                     android:text="Back"
                     android:id="@+id/back_button"
                     style="@style/Base.Widget.AppCompat.ActionButton"
-                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
                     android:fontFamily="sans-serif-thin"
                     android:textSize="20dp"/>

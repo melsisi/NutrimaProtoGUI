@@ -99,10 +99,20 @@ public class MealNutrients {
                 //bottom.add(mi);
                 continue;
             }
+            if ((mi.getCalories() == null) || (! mi.getCalories().matches("(\\d+(?:\\.\\d+)?)")) ||
+                    (mi.getProtein() == null) ||    (! mi.getProtein().matches("(\\d+(?:\\.\\d+)?)")) ||
+                    (mi.getCarbohydrates() == null) ||(! mi.getCarbohydrates().matches("(\\d+(?:\\.\\d+)?)"))   ||
+                    (mi.getTotalFat() == null) ||(! mi.getTotalFat().matches("(\\d+(?:\\.\\d+)?)"))   ||
+                    (mi.getSaturatedFat() == null) ||(! mi.getSaturatedFat().matches("(\\d+(?:\\.\\d+)?)"))   ||
+                    (mi.getFiber() == null) ||(! mi.getFiber().matches("(\\d+(?:\\.\\d+)?)"))   ||
+                    (mi.getSugar() == null) ||(! mi.getSugar().matches("(\\d+(?:\\.\\d+)?)"))) {
+                continue;
+            }
+
             top.add(mi);
 
-            calories.max = computeMaxMin(MaxMin.MAX, calories.max, (int) Float.parseFloat(mi.getCalories()));
-            calories.min = computeMaxMin(MaxMin.MIN, calories.min, (int) Float.parseFloat(mi.getCalories()));
+            calories.max = computeMaxMin(MaxMin.MAX, calories.max, (int) (Float.isNaN(Float.parseFloat(mi.getCalories())) ? 0 : Float.parseFloat(mi.getCalories())));
+            calories.min = computeMaxMin(MaxMin.MIN, calories.min, (int) (Float.isNaN(Float.parseFloat(mi.getCalories())) ? 0 : Float.parseFloat(mi.getCalories())));
 
             protein.max = computeMaxMin(MaxMin.MAX, protein.max, (int) Float.parseFloat(mi.getProtein()));
             protein.min = computeMaxMin(MaxMin.MIN, protein.min, (int) Float.parseFloat(mi.getProtein()));

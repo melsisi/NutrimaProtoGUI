@@ -309,7 +309,7 @@ public class RestaurantMenuItem {
 
     // TODO: Sync with AWS table
 
-    //@DynamoDBAttribute(attributeName = "FoodCategory")
+    @DynamoDBAttribute(attributeName = "FoodCategory")
     public String getFoodCategory() {return FoodCategory; }
 
     public void setFoodCategory(String foodCategory) {

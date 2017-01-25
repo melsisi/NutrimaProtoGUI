@@ -11,8 +11,11 @@ public enum FoodType {
     SANDWICH,
     PASTA,
     PIZZA,
-    HEALTHY,
+    SALAD,
+    SOUP,
+    TOPPING,
+    BAKED_GOODS,
     DESSERT,
     BEVERAGE,
-    APPETIZER
+    APPETIZER,
 }

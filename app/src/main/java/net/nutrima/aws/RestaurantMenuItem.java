@@ -46,14 +46,6 @@ public class RestaurantMenuItem {
     private String EggsFree;
     private String Halal;
 
-    public Business getBusiness() {
-        return business;
-    }
-
-    public void setBusiness(Business business) {
-        this.business = business;
-    }
-
     private Business business;
 
     @DynamoDBHashKey(attributeName = "Restaurant")
@@ -394,4 +386,12 @@ public class RestaurantMenuItem {
         return recommendations;
     }
     //--x--
+
+    public Business getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
 }

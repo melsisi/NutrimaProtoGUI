@@ -27,7 +27,7 @@ public class DynamoDBManagerTask extends
         //String tableStatus = DynamoDBManager.getTestTableStatus();
 
         //if (tableStatus.equals("ACTIVE")) {
-                toReturn = DynamoDBManager.getMenuForRestaurant(business[0].getName());
+                toReturn = DynamoDBManager.getMenuForRestaurant(business[0]);
         //}
 
         Globals.getInstance().setNumRunningAWSThreads(

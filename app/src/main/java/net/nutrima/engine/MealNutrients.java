@@ -176,9 +176,6 @@ public class MealNutrients {
         while (it.hasNext()) {
             Map.Entry<Business, List<RestaurantMenuItem>> pair = it.next();
             ArrayList<RestaurantMenuItem> temp = (ArrayList<RestaurantMenuItem>) pair.getValue();
-            for (RestaurantMenuItem mi: temp) {
-                mi.setBusiness(pair.getKey());
-            }
             plateNamesPM.addAll(temp);
         }
 

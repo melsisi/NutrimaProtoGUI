@@ -13,6 +13,7 @@ import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DescribeTableResult;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
+import net.nutrima.nutrimaprotogui.Business;
 import net.nutrima.nutrimaprotogui.Globals;
 import net.nutrima.nutrimaprotogui.R;
 
@@ -56,13 +57,13 @@ public class DynamoDBManager {
     /*
      * Retrieves all of the attribute/value pairs for the specified restaurant.
      */
-    public static ArrayList<RestaurantMenuItem> getMenuForRestaurant(String restaurant) {
+    public static ArrayList<RestaurantMenuItem> getMenuForRestaurant(Business restaurant) {
 
         AmazonDynamoDBClient ddb = Globals.getInstance().getClientManager().ddb();
         DynamoDBMapper mapper = new DynamoDBMapper(ddb);
 
         RestaurantMenuItem replyKey = new RestaurantMenuItem();
-        replyKey.setRestaurant(restaurant);
+        replyKey.setRestaurant(restaurant.getName());
 
         DynamoDBQueryExpression<RestaurantMenuItem> queryExpression =
                 new DynamoDBQueryExpression<RestaurantMenuItem>()
@@ -71,7 +72,7 @@ public class DynamoDBManager {
         try {
             long startTime = System.nanoTime();
             ArrayList<RestaurantMenuItem> latestReplies = paginatedQueryListToArrayList(
-                    mapper.query(RestaurantMenuItem.class, queryExpression));
+                    mapper.query(RestaurantMenuItem.class, queryExpression), restaurant);
 
             long endTime = System.nanoTime();
 
@@ -89,9 +90,10 @@ public class DynamoDBManager {
     }
 
     private static ArrayList<RestaurantMenuItem> paginatedQueryListToArrayList(
-            PaginatedQueryList<RestaurantMenuItem> menuItemPaginatedQueryList) {
+            PaginatedQueryList<RestaurantMenuItem> menuItemPaginatedQueryList, Business restaurant) {
         ArrayList<RestaurantMenuItem> toReturn = new ArrayList<>();
         for(RestaurantMenuItem mi : menuItemPaginatedQueryList) {
+            mi.setBusiness(restaurant);
             toReturn.add(mi);
         }
         return toReturn;

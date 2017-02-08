@@ -42,7 +42,7 @@ public class NutritionFilters {
     private int numOfMeals;
 
     private FilterSortOn filtersSorton = FilterSortOn.CALORIES;
-    private boolean ascendingSorting = true;
+    private boolean ascendingSorting = false;
 
     //--- Kitchen types ---
     private ArrayList<Kitchen> kitchens   = new ArrayList<Kitchen>(Arrays.asList(Kitchen.ALL));

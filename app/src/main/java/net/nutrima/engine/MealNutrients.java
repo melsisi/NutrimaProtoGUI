@@ -33,7 +33,7 @@ public class MealNutrients {
         }
     }
 
-    private ArrayList<RestaurantMenuItem> plateNamesPM = new ArrayList<> ();
+    ArrayList<RestaurantMenuItem> plateNamesPM = new ArrayList<> ();
     Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMapFiltered =   new  HashMap<Business, List<RestaurantMenuItem>>();
 
     public void filterMenuItemsUserPref (ArrayList<RestaurantMenuItem> plateNamesPM, NutritionFilters nutritionFilters){
@@ -47,8 +47,8 @@ public class MealNutrients {
 
         ArrayList<RestaurantMenuItem> top =
                 new ArrayList<RestaurantMenuItem>(plateNamesPM.size());
-       // ArrayList<RestaurantMenuItem> bottom =
-       //         new ArrayList<RestaurantMenuItem>(plateNamesPM.size());
+        // ArrayList<RestaurantMenuItem> bottom =
+        //         new ArrayList<RestaurantMenuItem>(plateNamesPM.size());
         //TODO: Handle additional filters by user on the fly
         for (RestaurantMenuItem mi : plateNamesPM) {
             //Hard filters; remove from the list
@@ -163,12 +163,12 @@ public class MealNutrients {
         //Ideal recommendations
         //TODO: Use filters to tweak those
         int calMeal      = (int) (nutrimaMetrics.getCalNutrima() / nutritionFilters.getNumOfMeals());
-        int proteinMeal  = (int) (nutrimaMetrics.getProteinNutrima() / nutritionFilters.getNumOfMeals());
-        int carbsMeal    = (int) (nutrimaMetrics.getCarbsNutrima() / nutritionFilters.getNumOfMeals());
-        int fatMeal      = (int) (nutrimaMetrics.getFatNutrima() / nutritionFilters.getNumOfMeals());
-        int satFatMeal   = (int) (nutrimaMetrics.getSatFatNutrima() / nutritionFilters.getNumOfMeals());
-        int fiberMeal    = (int) (nutrimaMetrics.getDietaryFiberNutrima() / nutritionFilters.getNumOfMeals());
-        int addedSugarMeal = (int) (nutrimaMetrics.getAddedSugarNutrima() / nutritionFilters.getNumOfMeals());
+        int proteinMeal  = (nutrimaMetrics.getProteinNutrima() / nutritionFilters.getNumOfMeals());
+        int carbsMeal    =  (nutrimaMetrics.getCarbsNutrima() / nutritionFilters.getNumOfMeals());
+        int fatMeal      =  (nutrimaMetrics.getFatNutrima() / nutritionFilters.getNumOfMeals());
+        int satFatMeal   =  (nutrimaMetrics.getSatFatNutrima() / nutritionFilters.getNumOfMeals());
+        int fiberMeal    = (nutrimaMetrics.getDietaryFiberNutrima() / nutritionFilters.getNumOfMeals());
+        int addedSugarMeal =  (nutrimaMetrics.getAddedSugarNutrima() / nutritionFilters.getNumOfMeals());
 
         //Construct the plateNamesPM
         Map<Business, List<RestaurantMenuItem>> map = Globals.getInstance().getRestaurantFullMenuMap();
@@ -179,7 +179,6 @@ public class MealNutrients {
             ArrayList<RestaurantMenuItem> temp = (ArrayList<RestaurantMenuItem>) pair.getValue();
             plateNamesPM.addAll(temp);
         }
-
 
         //Methodology:
         //1: Sort items according to user preferences
@@ -365,19 +364,45 @@ public class MealNutrients {
         for (RestaurantMenuItem mi : plateNamesPM) {
             if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories) {
                 //Calories match
-
             } else if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories * 1.333) {
                 //Calories recommendation
                 mi.addRecommendations("Eat 3/4 the item!");
-            }
-
-            else if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories * 1.5) {
+            } else if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories * 1.5) {
                 //Calories recommendation
                 mi.addRecommendations("Eat 2/3 the item!");
-            }
-            else if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories * 2) {
+            } else if ((int) Float.parseFloat(mi.getCalories()) <= tempCalories * 2) {
                 //Calories recommendation
                 mi.addRecommendations("Eat 1/2 the item!");
+            }
+
+
+            //Itimization of menu items
+            Globals.getInstance().plateNamesPMFilteredEntree = null;
+            Globals.getInstance().plateNamesPMFilteredAppetizer = null;
+            Globals.getInstance().plateNamesPMFilteredPizza = null;
+            Globals.getInstance().plateNamesPMFilteredBaked = null;
+            Globals.getInstance().plateNamesPMFilteredBeverage = null;
+            Globals.getInstance().plateNamesPMFilteredSalad = null;
+            Globals.getInstance().plateNamesPMFilteredSandwitch = null;
+            Globals.getInstance().plateNamesPMFilteredFastFood = null;
+            Globals.getInstance().plateNamesPMFilteredPasta = null;
+            Globals.getInstance().plateNamesPMFilteredSoup = null;
+            Globals.getInstance().plateNamesPMFilteredTopping = null;
+            Globals.getInstance().plateNamesPMFilteredDessert = null;
+
+            switch (mi.getFoodCategory_e()) {
+                case ENTREE: Globals.getInstance().plateNamesPMFilteredEntree.add(mi); break;
+                case APPETIZER: Globals.getInstance().plateNamesPMFilteredAppetizer.add(mi); break;
+                case PIZZA: Globals.getInstance().plateNamesPMFilteredPizza.add(mi); break;
+                case BAKED_GOODS: Globals.getInstance().plateNamesPMFilteredBaked.add(mi); break;
+                case BEVERAGE: Globals.getInstance().plateNamesPMFilteredBeverage.add(mi); break;
+                case SALAD: Globals.getInstance().plateNamesPMFilteredSalad.add(mi); break;
+                case SANDWICH: Globals.getInstance().plateNamesPMFilteredSandwitch.add(mi); break;
+                case FAST_FOOD: Globals.getInstance().plateNamesPMFilteredFastFood.add(mi); break;
+                case PASTA: Globals.getInstance().plateNamesPMFilteredPasta.add(mi); break;
+                case SOUP: Globals.getInstance().plateNamesPMFilteredSoup.add(mi); break;
+                case TOPPING: Globals.getInstance().plateNamesPMFilteredTopping.add(mi); break;
+                case DESSERT: Globals.getInstance().plateNamesPMFilteredDessert.add(mi); break;
             }
         }
 
@@ -385,8 +410,6 @@ public class MealNutrients {
 
         for (RestaurantMenuItem mi : plateNamesPM) {
             if (restaurantFullMenuMapFiltered.containsKey(mi.getBusiness())) {
-                //ArrayList<RestaurantMenuItem> temp = (ArrayList<RestaurantMenuItem>) restaurantFullMenuMapFiltered.get(mi.getBusiness());
-                //temp.add(mi);
                 restaurantFullMenuMapFiltered.get(mi.getBusiness()).add(mi);
             } else {
                 ArrayList<RestaurantMenuItem> temp = new ArrayList<>();
@@ -395,5 +418,7 @@ public class MealNutrients {
             }
         }
         Globals.getInstance().setRestaurantFullMenuMapFiltered(restaurantFullMenuMapFiltered);
+        plateNamesPM = null;
+        restaurantFullMenuMapFiltered = null;
     }
 }

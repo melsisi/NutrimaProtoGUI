@@ -131,6 +131,20 @@ public class Globals {
 
     private static Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMapFiltered;
     private static ArrayList<RestaurantMenuItem> plateNamesPMFiltered;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredEntree;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredAppetizer;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredPizza;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredBaked;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredBeverage;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredSalad;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredSandwitch;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredFastFood;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredPasta;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredSoup;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredTopping;
+    public static ArrayList<RestaurantMenuItem> plateNamesPMFilteredDessert;
+
+
 
     public static Map<Business, List<RestaurantMenuItem>> getRestaurantFullMenuMapFiltered() {
         return restaurantFullMenuMapFiltered;

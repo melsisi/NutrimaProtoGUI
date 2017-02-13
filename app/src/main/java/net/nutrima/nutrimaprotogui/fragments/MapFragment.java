@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -46,6 +49,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import net.nutrima.aws.DynamoDBManagerTask;
 import net.nutrima.aws.RestaurantMenuItem;
 import net.nutrima.engine.CurrentMetrics;
+import net.nutrima.engine.FoodType;
 import net.nutrima.engine.MealNutrients;
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.NutritionFilters;
@@ -58,14 +62,17 @@ import net.nutrima.nutrimaprotogui.ListMenuItemAdapter;
 import net.nutrima.nutrimaprotogui.ProfileCreatorActivity;
 import net.nutrima.nutrimaprotogui.R;
 import net.nutrima.nutrimaprotogui.SimpleMainActivity;
+import net.nutrima.nutrimaprotogui.UrlAsyncTask;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
@@ -88,9 +95,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
         checkIfLocationServicesEnabled();
-
     }
 
     LocationRequest mCoarseLocationRequest;
@@ -183,64 +188,98 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     static public void yelpReadyCallback() {
-        businessesToMap = FindHeavyOperations.getInstance().getBusinessesToMap();
+        if(Globals.getInstance().isRunningInLambda()) {
 
-        int i = 0;
-        for (final Business business : businessesToMap) {
-            if (businessNameAbscent(business.getName()))
-                continue;
-            i++;
-            Log.d("MAP_FRAGMENT", "Dispatching business name: " + business.getName());
-            new DynamoDBManagerTask().execute(business);
-            Globals.getInstance().setNumRunningAWSThreads(
-                    Globals.getInstance().getNumRunningAWSThreads() + 1);
         }
+        else {
+            businessesToMap = FindHeavyOperations.getInstance().getBusinessesToMap();
 
-        Log.d("MAP_FRAGMENT", "Dispatched " + i + " AWS threads.");
+            for (final Business business : businessesToMap) {
+                if (businessNameAbscent(business.getName()))
+                    continue;
+                Globals.getInstance().setNumRunningAWSThreads(
+                        Globals.getInstance().getNumRunningAWSThreads() + 1);
+            }
+            int i = 0;
+            for (final Business business : businessesToMap) {
+                if (businessNameAbscent(business.getName()))
+                    continue;
+                i++;
+                new DynamoDBManagerTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, business);
+            }
 
-        long endTime = System.nanoTime();
+            Log.d("MAP_FRAGMENT", "Dispatched " + i + " AWS threads.");
 
-        long duration = (endTime - startTime);
+            long endTime = System.nanoTime();
 
-        Log.d("MAP_FRAGMENT", "Time taken in Yelp execution: " + (duration / 1000000) + " milliseconds.");
+            long duration = (endTime - startTime);
+
+            Log.d("MAP_FRAGMENT", "Time taken in Yelp execution: " + (duration / 1000000) + " milliseconds.");
+        }
     }
 
     static public void awsReadyCallback() {
-        long tempTime = System.nanoTime();
-
-        long duration = (tempTime - startTime);
-
-        Log.d("MAP_FRAGMENT", "awsReadyCallback called after: " + (duration / 1000000) + " milliseconds.");
-
-        NutritionFilters nutritionFilters = new NutritionFilters(Globals.getInstance().getUserProfile());
-        MealNutrients mn = new MealNutrients();
-        mn.extractMeals(Globals.getInstance().getNutrimaMetrics(),
-                // TODO: Fill from log
-                new CurrentMetrics(),
-                nutritionFilters);
-
-        filterFromEngine(mn);
-
-        for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
-                Globals.getInstance().getRestaurantFullMenuMap().entrySet())
-        //Globals.getInstance().getRestaurantPersonalizedMenuMap().entrySet())
-        {
-            mMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_logo))
-                    .title(entry.getKey().getName())
-                    .position(entry.getKey().getCoordinates()));
+        if(Globals.getInstance().isRunningInLambda()) {
+            for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
+                    Globals.getRestaurantFullMenuMapFiltered().entrySet())
+            {
+                mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_logo))
+                        .title(entry.getKey().getName())
+                        .position(new LatLng(entry.getKey().getCoordinates().getLongitude(),
+                                entry.getKey().getCoordinates().getLatitude())));
+            }
         }
+        else {
+            long tempTime = System.nanoTime();
 
-        //getActivity().getWindow().
-        //        clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            long duration = (tempTime - startTime);
 
+            Log.d("MAP_FRAGMENT", "awsReadyCallback called after: " + (duration / 1000000) + " milliseconds.");
+
+            NutritionFilters nutritionFilters = new NutritionFilters(Globals.getInstance().getUserProfile());
+            ArrayList<FoodType> allButBeveragesFilter = new ArrayList<>();
+            allButBeveragesFilter.add(FoodType.APPETIZER);
+            allButBeveragesFilter.add(FoodType.BAKED_GOODS);
+            allButBeveragesFilter.add(FoodType.ENTREE);
+            allButBeveragesFilter.add(FoodType.FAST_FOOD);
+            allButBeveragesFilter.add(FoodType.PASTA);
+            allButBeveragesFilter.add(FoodType.PIZZA);
+            allButBeveragesFilter.add(FoodType.SALAD);
+            allButBeveragesFilter.add(FoodType.SANDWICH);
+            allButBeveragesFilter.add(FoodType.SOUP);
+            nutritionFilters.setFoodTypes(allButBeveragesFilter);
+            MealNutrients mn = new MealNutrients();
+            mn.extractMeals(Globals.getInstance().getNutrimaMetrics(),
+                    // TODO: Fill from log
+                    new CurrentMetrics(),
+                    nutritionFilters);
+
+            filterFromEngine(mn);
+
+            for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
+                    Globals.getRestaurantFullMenuMapFiltered().entrySet())
+            //        Globals.getInstance().getRestaurantFullMenuMap().entrySet())
+            //Globals.getInstance().getRestaurantPersonalizedMenuMap().entrySet())
+            {
+                mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_logo))
+                        .title(entry.getKey().getName())
+                        .position(new LatLng(entry.getKey().getCoordinates().getLatitude(),
+                                entry.getKey().getCoordinates().getLongitude())));
+            }
+
+            //getActivity().getWindow().
+            //        clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            long endTime = System.nanoTime();
+
+            duration = (endTime - startTime);
+
+            Log.d("MAP_FRAGMENT", "Time taken in execution: " + (duration / 1000000) + " milliseconds.");
+        }
         rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
-        long endTime = System.nanoTime();
-
-        duration = (endTime - startTime);
-
-        Log.d("MAP_FRAGMENT", "Time taken in execution: " + (duration / 1000000) + " milliseconds.");
     }
+
     @Override
     public void onConnectionSuspended(int i) {
         Log.e("GOOGLE CLIENT SISI", "SUSPENDED");
@@ -258,7 +297,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         rootView = inflater.inflate(R.layout.activity_map, container, false);
 
-        // Populate info from file ///////////////////////////////////////
+        // Populate user info from file ///////////////////////////////////////
         UserProfile savedUserProfile = readDataFromFile();
         if(savedUserProfile == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -581,7 +620,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         //Animation bottomLayoutSlideIn = AnimationUtils.loadAnimation(this.getContext(), R.anim.enter_from_bottom
         //        /*android.R.anim.fade_in*/);
         for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
-                Globals.getInstance().getRestaurantFullMenuMap().entrySet())
+                Globals.getInstance().getRestaurantFullMenuMapFiltered().entrySet())
         {
             if(entry.getKey().getName().equals(marker.getTitle())){
                 businessPhone.setText(entry.getKey().getPhone());
@@ -604,7 +643,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         // TODO: Convert to partial menu
         // Get full menu ///////////////////////////////////
         for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
-                Globals.getInstance().getRestaurantFullMenuMap().entrySet()) {
+                Globals.getInstance().getRestaurantFullMenuMapFiltered().entrySet()) {
             if(entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
                 int i = 0;
                 for(RestaurantMenuItem item : entry.getValue()) {

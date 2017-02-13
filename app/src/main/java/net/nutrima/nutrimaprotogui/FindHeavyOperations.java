@@ -48,16 +48,26 @@ public class FindHeavyOperations {
     }
 
     public void populateBusinessesAsync(final Activity activity){
-        Yelp.getYelp(activity.getBaseContext());
-        new Thread(new Runnable() {
-            public void run() {
-                businessesToMap = Yelp.getYelp(activity).search("food",
-                        mLastLocation.getLatitude(),
-                        mLastLocation.getLongitude(),
-                        city);
-                MapFragment.yelpReadyCallback();
-            }
-        }).start();
+        if(Globals.getInstance().isRunningInLambda()) {
+            LambdaManager lambdaManager = LambdaManager.getInstance();
+            lambdaManager.initOjects(getApplicationContext());
+            lambdaManager.getTopThreeMenuItemsAroundMeAsync(new LambdaRequest("food",
+                    mLastLocation.getLongitude(),
+                    mLastLocation.getLatitude(),
+                    city));
+        }
+        else {
+            Yelp.getYelp(activity.getBaseContext());
+            new Thread(new Runnable() {
+                public void run() {
+                    businessesToMap = Yelp.getYelp(activity).search("food",
+                            mLastLocation.getLatitude(),
+                            mLastLocation.getLongitude(),
+                            city);
+                    MapFragment.yelpReadyCallback();
+                }
+            }).start();
+        }
     }
 
     public void populateLocations(final Activity activity, GoogleApiClient mGoogleApiClient) {

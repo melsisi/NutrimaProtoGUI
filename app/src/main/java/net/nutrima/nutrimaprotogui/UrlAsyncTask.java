@@ -17,7 +17,7 @@ import java.net.URL;
 /**
  * Created by melsisi on 4/27/2016.
  */
-class UrlAsyncTask extends
+public class UrlAsyncTask extends
         AsyncTask<String, Void, Drawable> {
 
     protected Drawable doInBackground(

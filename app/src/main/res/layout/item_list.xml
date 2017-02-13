@@ -21,34 +21,48 @@
     android:background="?android:attr/selectableItemBackground"
     android:padding="@dimen/md_keylines">
 
-    <ImageView
+    <!--ImageView
         android:id="@+id/list_avatar"
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
         android:scaleType="centerCrop"
-        tools:src="@drawable/a_avator" />
+        tools:src="@drawable/a_avator" /-->
 
     <TextView
         android:id="@+id/list_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/md_keylines"
-        android:layout_toRightOf="@+id/list_avatar"
-        tools:text="@string/item_title"
+        tools:text="Plate name - Entree"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="@dimen/article_subheading" />
-
+    <TextView
+        android:id="@+id/list_nutrient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="000 cals"
+        android:layout_alignParentEnd="true"/>
     <TextView
         android:id="@+id/list_desc"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/list_title"
-        android:layout_marginLeft="@dimen/md_keylines"
-        android:layout_toRightOf="@+id/list_avatar"
         android:textColor="@color/medium_grey"
         android:ellipsize="end"
-        android:singleLine="true"
-        tools:text="@string/item_desc"
+        tools:text="Plate description. This can span two lines. We need to make sure it's not that long. If too long, we can truncate and append '...'"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="@dimen/list_body" />
+        android:textSize="@dimen/list_body"/>
+    <TextView
+        android:id="@+id/list_dist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.0 miles"
+        android:layout_below="@id/list_desc"
+        android:layout_alignParentEnd="true"/>
+    <TextView
+        android:id="@+id/list_business"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Restaurant Name"
+        android:layout_below="@id/list_desc"
+        android:layout_alignParentStart="true"/>
 </RelativeLayout>

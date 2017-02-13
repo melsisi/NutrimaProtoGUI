@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class RestaurantMenuItem {
 
     private String Restaurant;
+    private String FoodCategory;
     private String ItemName;
     private String ItemDescription;
     private String ServingsPerItem;
@@ -38,7 +39,7 @@ public class RestaurantMenuItem {
 
     private String GlutenFree;
     private String SoyFree;
-    private String DiaryFree;
+    private String DairyFree;
     private String FishFree;
     private String ShellFishFree;
     private String NutsFree;
@@ -228,13 +229,13 @@ public class RestaurantMenuItem {
         SoyFree = soyFree;
     }
 
-    @DynamoDBAttribute(attributeName = "DiaryFree")
-    public String getDiaryFree() {
-        return DiaryFree;
+    @DynamoDBAttribute(attributeName = "DairyFree")
+    public String getDairyFree() {
+        return DairyFree;
     }
 
-    public void setDiaryFree(String diaryFree) {
-        DiaryFree = diaryFree;
+    public void setDairyFree(String dairyFree) {
+        DairyFree = dairyFree;
     }
 
     @DynamoDBAttribute(attributeName = "FishFree")
@@ -292,7 +293,6 @@ public class RestaurantMenuItem {
     }
 
     //--x-- Added by Ahmed
-    private String FoodCategory;
     private FoodType foodCategory_e;
     private String Kitchen;
     private Kitchen kitchen_e;

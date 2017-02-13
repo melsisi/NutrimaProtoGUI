@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.nutrima.aws.RestaurantMenuItem;
+import net.nutrima.engine.FoodType;
 import net.nutrima.nutrimaprotogui.Business;
 import net.nutrima.nutrimaprotogui.Globals;
 import net.nutrima.nutrimaprotogui.R;
@@ -68,14 +70,20 @@ public class ListContentFragment extends Fragment {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView avator;
-        public TextView name;
-        public TextView description;
+        //public ImageView img;
+        public TextView plateName;
+        public TextView plateDesc;
+        public TextView businessName;
+        public TextView nutrients;
+        public TextView distance;
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_list, parent, false));
-            avator = (ImageView) itemView.findViewById(R.id.list_avatar);
-            name = (TextView) itemView.findViewById(R.id.list_title);
-            description = (TextView) itemView.findViewById(R.id.list_desc);
+            //img = (ImageView) itemView.findViewById(R.id.list_avatar);
+            plateName = (TextView) itemView.findViewById(R.id.list_title);
+            plateDesc = (TextView) itemView.findViewById(R.id.list_desc);
+            businessName = (TextView) itemView.findViewById(R.id.list_business);
+            nutrients = (TextView) itemView.findViewById(R.id.list_nutrient);
+            distance = (TextView) itemView.findViewById(R.id.list_dist);
         }
     }
     /**
@@ -83,16 +91,17 @@ public class ListContentFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final int LENGTH = Globals.getInstance().getRestaurantFullMenuMap().size();
-        private List<Business> businesses = null;
-        private Map<Business, List<RestaurantMenuItem>> menuMap = null;
+        //private static final int LENGTH = Globals.getPlateNamesPMFiltered().size();
+
+        // Only show top 100 best options
+        private static final int LENGTH = 100;
+        private ArrayList<RestaurantMenuItem> menuMap = null;
 
         public ContentAdapter(Context context) {
-            if(Globals.getInstance().getRestaurantFullMenuMap() == null ||
-                    Globals.getInstance().getRestaurantFullMenuMap().size() == 0)
+            if(Globals.getPlateNamesPMFiltered() == null ||
+                    Globals.getPlateNamesPMFiltered().size() == 0)
                 return;
-            businesses = new ArrayList<>(Globals.getInstance().getRestaurantFullMenuMap().keySet());
-            menuMap = Globals.getInstance().getRestaurantFullMenuMap();
+            menuMap = Globals.getPlateNamesPMFiltered();
         }
 
         @Override
@@ -102,14 +111,19 @@ public class ListContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            if(businesses == null || businesses.size() == 0)
+            if(menuMap == null || menuMap.size() == 0)
                 return;
-            if(position==0)
+            if(position == 0)
                 return;
             // TODO: Add place image
-            //holder.avator.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
-            holder.name.setText(businesses.get(0).getName());
-            holder.description.setText(businesses.get(0).getAddress());
+            //holder.img.setImageDrawable(menuMap.get(position).getBusiness().getImage());
+            holder.plateName.setText(menuMap.get(position).getItemName() + " - " +
+                    menuMap.get(position).getFoodCategory());
+            holder.plateDesc.setText(menuMap.get(position).getItemDescription());
+            holder.businessName.setText(menuMap.get(position).getRestaurant());
+            // TODO: Show only most relevant nutrient
+            holder.nutrients.setText(menuMap.get(position).getCalories() + " " + "Cals");
+            // TODO: Display distance
         }
 
         @Override

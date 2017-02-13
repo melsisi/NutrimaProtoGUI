@@ -1,7 +1,5 @@
 package net.nutrima.nutrimaprotogui;
 
-import com.google.android.gms.maps.model.LatLng;
-
 /**
  * Created by melsisi on 9/10/2016.
  */
@@ -60,4 +58,26 @@ public class Business {
     public void setRatingImageUrl(String ratingImageUrl) {
         this.ratingImageUrl = ratingImageUrl;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Business other = (Business) obj;
+        if(!other.name.equals(this.name))
+            return false;
+        if(!other.address.equals(this.address))
+            return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() + address.hashCode();
+    }
+
 }

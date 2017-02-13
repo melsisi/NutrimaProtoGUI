@@ -3,6 +3,7 @@ package net.nutrima.nutrimaprotogui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -23,6 +24,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,9 +35,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.lambdainvoker.LambdaFunctionException;
+import com.amazonaws.mobileconnectors.lambdainvoker.LambdaInvokerFactory;
+import com.amazonaws.regions.Regions;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.wearable.internal.GetLocalNodeResponse;
 
+import net.nutrima.aws.RestaurantMenuItem;
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.UserProfile;
 import net.nutrima.nutrimaprotogui.fragments.ListContentFragment;
@@ -57,6 +66,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class SimpleMainActivity extends AppCompatActivity {
@@ -76,7 +86,14 @@ public class SimpleMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_main);
 
+        Globals.getInstance().setRunningInLambda(true);
+
         handleConfigFilterButton();
+
+        // NOTE: This was only for an experiment.
+        // This demonstrates how to write to
+        // DynamoDB from this app.
+        // populateTestMenusList();
 
         Intent intent = this.getIntent();
         String fromPage = intent.getStringExtra("FROM");
@@ -91,6 +108,8 @@ public class SimpleMainActivity extends AppCompatActivity {
 
         adapter = new Adapter(getSupportFragmentManager());
 
+        // This is a handler to the log save FloatingActionButton.
+        // Will be added back later.
         //logSaveFab = (FloatingActionButton) findViewById(R.id.save_log_fab);
 
         // Setting ViewPager for each Tabs
@@ -171,7 +190,8 @@ public class SimpleMainActivity extends AppCompatActivity {
             }
         });*/
 
-        populateLocalAWSRestaurantList();
+        if(!Globals.getInstance().isRunningInLambda())
+            populateLocalAWSRestaurantList();
 
     }
 
@@ -366,6 +386,124 @@ public class SimpleMainActivity extends AppCompatActivity {
         }
         else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void populateTestMenusList() {
+        ArrayList<RestaurantMenuItem> list = new ArrayList<>();
+
+        InputStream file = null;
+        try {
+            file = getResources().openRawResource(getResources().getIdentifier("menus_test",
+                    "raw", getPackageName()));
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(file));
+            //Create Workbook instance holding reference to .xlsx file
+            HSSFWorkbook workbook = new HSSFWorkbook(file);
+
+            //Get first/desired sheet from the workbook
+            HSSFSheet sheet = workbook.getSheetAt(0);
+
+            //Iterate through each rows one by one
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            // Skip first row
+            rowIterator.next();
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                //For each row, iterate through all the columns
+                Iterator<Cell> cellIterator = row.cellIterator();
+                int i = 0;
+                RestaurantMenuItem toAdd = new RestaurantMenuItem();
+                while(cellIterator.hasNext()) {
+                    if (i == 0)
+                        toAdd.setRestaurant(cellIterator.next().getStringCellValue());
+                    else if (i == 1)
+                        toAdd.setFoodCategory(cellIterator.next().getStringCellValue());
+                    else if (i == 2)
+                        toAdd.setItemName(cellIterator.next().getStringCellValue());
+                    else if (i == 3)
+                        toAdd.setItemDescription(cellIterator.next().getStringCellValue());
+                    else if (i == 4) {
+                        toAdd.setServingsPerItem("13");
+                        cellIterator.next();
+                    }
+                    else if (i == 5) {
+                        toAdd.setServingSizeMetric("34");
+                        cellIterator.next();
+                    }
+                    else if (i == 6)
+                        toAdd.setServingSizeUnit(cellIterator.next().getStringCellValue());
+                    else if (i == 7)
+                        toAdd.setServingsSizePieces(cellIterator.next().getStringCellValue());
+                    else if (i == 8) {
+                        toAdd.setCalories("300");
+                        cellIterator.next();
+                    }
+                    else if (i == 9) {
+                        //TODO: fix later
+                        toAdd.setTotalFat("100");
+                        cellIterator.next();
+                    } else if (i == 10) {
+                        toAdd.setSaturatedFat("100");
+                        cellIterator.next();
+                    }
+                    else if (i == 11) {
+                        toAdd.setTransFat("100");
+                        cellIterator.next();
+                    }
+                    else if (i == 12) {
+                        toAdd.setCholesterol("100");
+                        cellIterator.next();
+                    }
+                    else if (i == 13) {
+                        toAdd.setSodium("100");
+                        cellIterator.next();
+                    }
+                    else if (i == 14) {
+                        toAdd.setPotassium("100");
+                        cellIterator.next();
+                    }
+                    else if (i == 15) {
+                        toAdd.setCarbohydrates("100");
+                        cellIterator.next();
+                    }
+                    else if (i == 16) {
+                        toAdd.setFiber("100");
+                        cellIterator.next();
+                    }
+                    else if (i == 17) {
+                        toAdd.setSugar("100");
+                        cellIterator.next();
+                    }
+                    else if (i == 18) {
+                        toAdd.setProtein("100");
+                        cellIterator.next();
+                    }
+                    else {
+                        break;
+                    }
+                    i++;
+                }
+                list.add(toAdd);
+            }
+            file.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Globals.getInstance().setTempMenuesList(list);
+    }
+
+    static boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 }

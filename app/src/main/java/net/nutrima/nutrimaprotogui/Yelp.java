@@ -1,8 +1,5 @@
 package net.nutrima.nutrimaprotogui;
 import android.content.Context;
-import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -146,7 +143,7 @@ public class Yelp {
                     Business toAdd = new Business();
                     toAdd.setName(name);
                     toAdd.setPhone(phone);
-                    toAdd.setCoordinates(new LatLng(latitude, longitude));
+                    toAdd.setCoordinates(new LatLng(longitude, latitude));
                     toAdd.setImageUrl(imageUrl);
                     toAdd.setRatingImageUrl(ratingImageUrl);
 

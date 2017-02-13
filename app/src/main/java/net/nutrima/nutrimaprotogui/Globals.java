@@ -27,7 +27,17 @@ public class Globals {
     private static int numRunningAWSThreads;
     private static List<String> AWSRestaurants;
     private static Bundle fbResponse;
+    private static boolean runningInLambda;
 
+    public static List<RestaurantMenuItem> getTempMenuesList() {
+        return tempMenuesList;
+    }
+
+    public static void setTempMenuesList(List<RestaurantMenuItem> tempMenuesList) {
+        Globals.tempMenuesList = tempMenuesList;
+    }
+
+    private static List<RestaurantMenuItem> tempMenuesList;
 
 
     public static Globals getInstance() {
@@ -161,4 +171,13 @@ public class Globals {
     public static void setPlateNamesPMFiltered(ArrayList<RestaurantMenuItem> plateNamesPMFiltered) {
         Globals.plateNamesPMFiltered = plateNamesPMFiltered;
     }
+
+    public boolean isRunningInLambda() {
+        return runningInLambda;
+    }
+
+    public void setRunningInLambda(boolean runningInLambda) {
+        Globals.runningInLambda = runningInLambda;
+    }
+
 }

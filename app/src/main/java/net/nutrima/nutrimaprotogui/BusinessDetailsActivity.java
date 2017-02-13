@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class BusinessDetailsActivity extends AppCompatActivity {
 
-    private ArrayList<RestaurantMenuItem> plateNamesPM;
+    private List<RestaurantMenuItem> plateNamesPM;
     private List<RestaurantMenuItem> plateNamesFM;
     private ArrayList<RestaurantMenuItem> plateNamesToDisplay;
 
@@ -56,29 +58,46 @@ public class BusinessDetailsActivity extends AppCompatActivity {
         final ListView menuListView = (ListView) findViewById(R.id.menu_listview);
         Business business = null;
         plateNamesFM = new ArrayList<>();
-        // Get full menu ///////////////////////////////////
-        for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
-                Globals.getInstance().getRestaurantFullMenuMap().entrySet()) {
-            if(entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
-                plateNamesFM.addAll(entry.getValue());
-                business = entry.getKey();
-                break;
-            }
-        }
-        ///////////////////////////////////////////////
-
         plateNamesPM = new ArrayList<>();
-        // Get personalized menu ///////////////////////////////////
-        for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
-                Globals.getInstance().getRestaurantPersonalizedMenuMap().entrySet()) {
-            if(entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
-                plateNamesPM.addAll(entry.getValue());
-                break;
+
+        if(Globals.getInstance().isRunningInLambda()) {
+            LambdaManager lambdaManager = LambdaManager.getInstance();
+            lambdaManager.initOjects(getApplicationContext());
+            List<List<RestaurantMenuItem>> fullAndFilteredMenus =
+                    lambdaManager.getFullAndFilteredMenuForRestaurant(businessName);
+            plateNamesFM = fullAndFilteredMenus.get(0);
+            plateNamesPM = fullAndFilteredMenus.get(1);
+            for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
+                    Globals.getInstance().getRestaurantFullMenuMapFiltered().entrySet()) {
+                if (entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
+                    business = entry.getKey();
+                    break;
+                }
             }
         }
+        else {
+            // Get full menu ///////////////////////////////////
+            for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
+                    Globals.getInstance().getRestaurantFullMenuMap().entrySet()) {
+                if (entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
+                    plateNamesFM.addAll(entry.getValue());
+                    business = entry.getKey();
+                    break;
+                }
+            }
+            ///////////////////////////////////////////////
 
-        ///////////////////////////////////////////////
+            // Get personalized menu ///////////////////////////////////
+            for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
+                    Globals.getInstance().getRestaurantPersonalizedMenuMap().entrySet()) {
+                if (entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
+                    plateNamesPM.addAll(entry.getValue());
+                    break;
+                }
+            }
+            ///////////////////////////////////////////////
 
+        }
         plateNamesToDisplay = new ArrayList<>();
 
         plateNamesToDisplay.addAll(plateNamesPM);

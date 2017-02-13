@@ -30,9 +30,6 @@ public class DynamoDBManagerTask extends
                 toReturn = DynamoDBManager.getMenuForRestaurant(business[0]);
         //}
 
-        Globals.getInstance().setNumRunningAWSThreads(
-                Globals.getInstance().getNumRunningAWSThreads() - 1);
-
         Log.d("DynamoDBManagerTask", "End business name: " + business[0].getName());
 
         if(toReturn == null || toReturn.size() == 0)
@@ -46,6 +43,8 @@ public class DynamoDBManagerTask extends
 
     @Override
     protected void onPostExecute(List<RestaurantMenuItem> result) {
+        Globals.getInstance().setNumRunningAWSThreads(
+                Globals.getInstance().getNumRunningAWSThreads() - 1);
         if(result == null)
             return;
         Log.d("DynamoDBManagerTask", "onPostExecute called for business name: " + result.get(0).getRestaurant());

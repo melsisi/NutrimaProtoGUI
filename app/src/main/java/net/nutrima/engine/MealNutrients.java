@@ -67,7 +67,7 @@ public class MealNutrients {
             if ((nutritionFilters.isSoyAllergy()) && mi.getSoyFree()=="N")  {
                 continue;
             }
-            if ((nutritionFilters.isDiaryAllergy()) && mi.getDiaryFree()=="N")  {
+            if ((nutritionFilters.isDiaryAllergy()) && mi.getDairyFree()=="N")  {
                 continue;
             }
             if ((nutritionFilters.isFishAllergy()) && mi.getFishFree()=="N")  {

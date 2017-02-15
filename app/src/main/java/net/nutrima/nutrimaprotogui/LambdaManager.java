@@ -78,7 +78,13 @@ public class LambdaManager {
         }.execute(input);
     }
 
-    public List<List<RestaurantMenuItem>> getFullAndFilteredMenuForRestaurant(String restaurantName) {
+    public interface MyCallbackInterface {
+
+        void onDownloadFinished(LambdaRespMenues result);
+    }
+
+    public List<List<RestaurantMenuItem>> getFullAndFilteredMenuForRestaurant(String restaurantName,
+                                                                              final MyCallbackInterface callbackIf) {
         try {
             LambdaRespMenues tempResults = new AsyncTask<String, Void, LambdaRespMenues>() {
                 @Override
@@ -89,6 +95,13 @@ public class LambdaManager {
                         Log.e("Tag", "Failed to invoke lambda fn", lfe);
                         return null;
                     }
+                }
+                @Override
+                protected void onPostExecute(LambdaRespMenues result) {
+                    if (result == null) {
+                        return;
+                    }
+                    callbackIf.onDownloadFinished(result);
                 }
             }.execute(restaurantName).get();
 

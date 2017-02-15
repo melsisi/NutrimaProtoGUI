@@ -56,6 +56,7 @@ import net.nutrima.nutrimaprotogui.BusinessDetailsActivity;
 import net.nutrima.nutrimaprotogui.FindHeavyOperations;
 import net.nutrima.nutrimaprotogui.Globals;
 import net.nutrima.nutrimaprotogui.LambdaManager;
+import net.nutrima.nutrimaprotogui.LambdaRespMenues;
 import net.nutrima.nutrimaprotogui.ListMenuItemAdapter;
 import net.nutrima.nutrimaprotogui.ProfileCreatorActivity;
 import net.nutrima.nutrimaprotogui.R;
@@ -354,14 +355,20 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 if(!markerClicked)
                     return;
                 getActivity().findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-                Intent intent = new Intent(getContext(), BusinessDetailsActivity.class);
+                final Intent intent = new Intent(getContext(), BusinessDetailsActivity.class);
                 String message = marker.getTitle();
                 intent.putExtra("BUSINESS_NAME", message);
 
                 LambdaManager lambdaManager = LambdaManager.getInstance();
                 lambdaManager.initObjects(getApplicationContext());
                 List<List<RestaurantMenuItem>> fullAndFilteredMenus =
-                        lambdaManager.getFullAndFilteredMenuForRestaurant(message);
+                        lambdaManager.getFullAndFilteredMenuForRestaurant(message, new LambdaManager.MyCallbackInterface() {
+                            @Override
+                            public void onDownloadFinished(LambdaRespMenues result) {
+                                getActivity().findViewById(R.id.progressBar).setVisibility(View.GONE);
+                                startActivity(intent);
+                            }
+                        });
                 BusinessDetailsActivity.setPlateNamesFM(fullAndFilteredMenus.get(0));
                 BusinessDetailsActivity.setPlateNamesPM(fullAndFilteredMenus.get(1));
                 for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
@@ -371,8 +378,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         break;
                     }
                 }
-                getActivity().findViewById(R.id.progressBar).setVisibility(View.GONE);
-                startActivity(intent);
             }
         });
         markerClicked = false;

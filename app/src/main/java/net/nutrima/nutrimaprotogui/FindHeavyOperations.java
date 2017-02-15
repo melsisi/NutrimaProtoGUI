@@ -17,6 +17,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import net.nutrima.engine.CurrentMetrics;
 import net.nutrima.nutrimaprotogui.fragments.MapFragment;
 
 import java.io.IOException;
@@ -57,7 +58,10 @@ public class FindHeavyOperations implements LocationListener {
             lambdaManager.getTopThreeMenuItemsAroundMeAsync(new LambdaRequest("food",
                     mLastLocation.getLongitude(),
                     mLastLocation.getLatitude(),
-                    city));
+                    city,
+                    Globals.getInstance().getUserProfile(),
+                    (Globals.getInstance().getCurrentMetrics() == null ?
+                            new CurrentMetrics() : Globals.getInstance().getCurrentMetrics())));
         }
         else {
             Yelp.getYelp(activity.getBaseContext());

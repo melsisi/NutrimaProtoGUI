@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import net.nutrima.aws.AmazonClientManager;
 import net.nutrima.aws.RestaurantMenuItem;
+import net.nutrima.engine.CurrentMetrics;
 import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.UserProfile;
 
@@ -21,6 +22,7 @@ public class Globals {
     private static Globals ourInstance = new Globals();
     private static NutrimaMetrics nutrimaMetrics;
     private static UserProfile userProfile;
+    private static CurrentMetrics currentMetrics;
     private static AmazonClientManager clientManager;
     private static Map<Business, List<RestaurantMenuItem>> restaurantFullMenuMap;
     private static Map<Business, List<RestaurantMenuItem>> restaurantPersonalizedMenuMap;
@@ -118,6 +120,14 @@ public class Globals {
 
     public void setUserProfile(UserProfile userProfile) {
         Globals.userProfile = userProfile;
+    }
+
+    public static CurrentMetrics getCurrentMetrics() {
+        return currentMetrics;
+    }
+
+    public static void setCurrentMetrics(CurrentMetrics currentMetrics) {
+        Globals.currentMetrics = currentMetrics;
     }
 
     public Bundle getFbResponse() {

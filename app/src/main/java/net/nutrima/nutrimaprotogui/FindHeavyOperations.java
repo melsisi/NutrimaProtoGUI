@@ -13,6 +13,8 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import net.nutrima.nutrimaprotogui.fragments.MapFragment;
@@ -28,7 +30,7 @@ import static net.nutrima.nutrimaprotogui.fragments.MapFragment.TAG;
 /**
  * Created by melsisi on 9/26/2016.
  */
-public class FindHeavyOperations {
+public class FindHeavyOperations implements LocationListener {
     private static FindHeavyOperations ourInstance;
     private static ArrayList<Business> businessesToMap;
     private final int MY_PERMISSIONS_REQUEST = 0;
@@ -44,13 +46,14 @@ public class FindHeavyOperations {
     }
 
     protected FindHeavyOperations() {
+        mLastLocation = null;
         businessesToMap = new ArrayList<Business>();
     }
 
     public void populateBusinessesAsync(final Activity activity){
         if(Globals.getInstance().isRunningInLambda()) {
             LambdaManager lambdaManager = LambdaManager.getInstance();
-            lambdaManager.initOjects(getApplicationContext());
+            lambdaManager.initObjects(getApplicationContext());
             lambdaManager.getTopThreeMenuItemsAroundMeAsync(new LambdaRequest("food",
                     mLastLocation.getLongitude(),
                     mLastLocation.getLatitude(),
@@ -72,6 +75,13 @@ public class FindHeavyOperations {
 
     public void populateLocations(final Activity activity, GoogleApiClient mGoogleApiClient) {
 
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(0);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setNumUpdates(1);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
+
         // 1- Get my current location ////////////////////////////////////
         if (ActivityCompat.checkSelfPermission(activity.getBaseContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -91,8 +101,10 @@ public class FindHeavyOperations {
             mLastLocation.setLongitude(-117.7853251d);
         }
         else
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
+            while(mLastLocation == null) {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                        mGoogleApiClient);
+            }
 
         Geocoder gcd = new Geocoder(activity, Locale.getDefault());
         try {
@@ -156,5 +168,10 @@ public class FindHeavyOperations {
 
     public void setYelpBusinessesReady(boolean yelpBusinessesReady) {
         FindHeavyOperations.yelpBusinessesReady = yelpBusinessesReady;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
     }
 }

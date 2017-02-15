@@ -6,9 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -51,28 +49,26 @@ import net.nutrima.aws.RestaurantMenuItem;
 import net.nutrima.engine.CurrentMetrics;
 import net.nutrima.engine.FoodType;
 import net.nutrima.engine.MealNutrients;
-import net.nutrima.engine.NutrimaMetrics;
 import net.nutrima.engine.NutritionFilters;
 import net.nutrima.engine.UserProfile;
 import net.nutrima.nutrimaprotogui.Business;
 import net.nutrima.nutrimaprotogui.BusinessDetailsActivity;
 import net.nutrima.nutrimaprotogui.FindHeavyOperations;
 import net.nutrima.nutrimaprotogui.Globals;
+import net.nutrima.nutrimaprotogui.LambdaManager;
 import net.nutrima.nutrimaprotogui.ListMenuItemAdapter;
 import net.nutrima.nutrimaprotogui.ProfileCreatorActivity;
 import net.nutrima.nutrimaprotogui.R;
-import net.nutrima.nutrimaprotogui.SimpleMainActivity;
-import net.nutrima.nutrimaprotogui.UrlAsyncTask;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
@@ -81,10 +77,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     private Marker previousMarker;
     private static GoogleMap mMap;
-    private String city;
-    private final int MY_PERMISSIONS_REQUEST = 0;
-    private static ArrayList<Business> businessesToMap;
-    private final String QUERY = "restaurant";
     private FloatingActionButton businessOkFab;
     private boolean markerClicked;
     private static View rootView;
@@ -113,7 +105,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     /**
      * Constant used in the location settings dialog.
      */
-    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
     public final static int REQUEST_LOCATION = 199;
 
     private void checkIfLocationServicesEnabled() {
@@ -125,7 +116,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
-            public void onResult(LocationSettingsResult result) {
+            public void onResult(@NonNull LocationSettingsResult result) {
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
@@ -168,16 +159,29 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                     case Activity.RESULT_OK:
                         // All required changes were successfully made
                         startTime = System.nanoTime();
-                        FindHeavyOperations.getInstance().populateLocations(getActivity(), mGoogleApiClient);
+                        if(mGoogleApiClient.isConnected()) {
+                            FindHeavyOperations.getInstance().populateLocations(getActivity(), mGoogleApiClient);
 
-                        // Animate camera to current position
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
-                                        FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
+                            // Animate camera to current position
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
+                                            FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
+                        }
+                        else {
+                            mGoogleApiClient.connect();
+                        }
                         break;
                     case Activity.RESULT_CANCELED:
-                        // The user was asked to change settings, but chose not to
-
+                        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                        alertDialog.setTitle("Location Disabled!");
+                        alertDialog.setMessage("For Nutrima to operate, location services need to be enabled.");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        getActivity().finish();
+                                    }
+                                });
+                        alertDialog.show();
                         break;
                     default:
 
@@ -188,11 +192,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     static public void yelpReadyCallback() {
-        if(Globals.getInstance().isRunningInLambda()) {
-
-        }
-        else {
-            businessesToMap = FindHeavyOperations.getInstance().getBusinessesToMap();
+        if(!Globals.getInstance().isRunningInLambda()) {
+            ArrayList<Business> businessesToMap = FindHeavyOperations.getInstance().getBusinessesToMap();
 
             for (final Business business : businessesToMap) {
                 if (businessNameAbscent(business.getName()))
@@ -352,9 +353,25 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             public void onClick(View v) {
                 if(!markerClicked)
                     return;
+                getActivity().findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                 Intent intent = new Intent(getContext(), BusinessDetailsActivity.class);
                 String message = marker.getTitle();
                 intent.putExtra("BUSINESS_NAME", message);
+
+                LambdaManager lambdaManager = LambdaManager.getInstance();
+                lambdaManager.initObjects(getApplicationContext());
+                List<List<RestaurantMenuItem>> fullAndFilteredMenus =
+                        lambdaManager.getFullAndFilteredMenuForRestaurant(message);
+                BusinessDetailsActivity.setPlateNamesFM(fullAndFilteredMenus.get(0));
+                BusinessDetailsActivity.setPlateNamesPM(fullAndFilteredMenus.get(1));
+                for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
+                        Globals.getInstance().getRestaurantFullMenuMapFiltered().entrySet()) {
+                    if (entry.getKey().getName().toLowerCase().equals(message.toLowerCase())) {
+                        BusinessDetailsActivity.setBusiness(entry.getKey());
+                        break;
+                    }
+                }
+                getActivity().findViewById(R.id.progressBar).setVisibility(View.GONE);
                 startActivity(intent);
             }
         });
@@ -380,6 +397,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
         if (ActivityCompat.checkSelfPermission(this.getContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            int MY_PERMISSIONS_REQUEST = 0;
             ActivityCompat.requestPermissions(this.getActivity(),
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSIONS_REQUEST);
@@ -418,8 +436,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 }
 
                 businessesToMap = FindHeavyOperations.getInstance().getBusinessesToMap();
-
-                // TODO: Filter for presence in AWS (local)
 
                 // Get menus from AWS
                 for(final Business business : businessesToMap) {

@@ -48,7 +48,7 @@ public class LambdaManager {
     private LambdaManager() {
     }
 
-    public void initOjects(Context context) {
+    public void initObjects(Context context) {
         cognitoProvider = new CognitoCachingCredentialsProvider(
                 context, "us-west-2:d8906892-52a9-45c2-aa66-10fc5e19af64", Regions.US_WEST_2);
         factory = new LambdaInvokerFactory(context, Regions.US_WEST_2, cognitoProvider);

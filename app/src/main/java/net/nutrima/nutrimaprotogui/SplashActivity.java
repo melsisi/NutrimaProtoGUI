@@ -3,6 +3,7 @@ package net.nutrima.nutrimaprotogui;
 import android.*;
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
@@ -10,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
@@ -110,8 +112,17 @@ public class SplashActivity extends AppCompatActivity {
 
 
                 } else {
-                    // TODO: Show an apology message
-                    // Exit app.
+                    AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+                    alertDialog.setTitle("Location Disabled!");
+                    alertDialog.setMessage("For Nutrima to operate, location services need to be enabled.");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                    alertDialog.show();
+
                 }
                 return;
             }

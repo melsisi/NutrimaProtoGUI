@@ -21,12 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class BusinessDetailsActivity extends AppCompatActivity {
 
-    private List<RestaurantMenuItem> plateNamesPM;
-    private List<RestaurantMenuItem> plateNamesFM;
+    private static List<RestaurantMenuItem> plateNamesPM;
+    private static List<RestaurantMenuItem> plateNamesFM;
+    private static Business business;
     private ArrayList<RestaurantMenuItem> plateNamesToDisplay;
 
     @Override
@@ -56,26 +55,12 @@ public class BusinessDetailsActivity extends AppCompatActivity {
 
         // Creating menu listview ////////////////////////////////////////
         final ListView menuListView = (ListView) findViewById(R.id.menu_listview);
-        Business business = null;
-        plateNamesFM = new ArrayList<>();
-        plateNamesPM = new ArrayList<>();
 
-        if(Globals.getInstance().isRunningInLambda()) {
-            LambdaManager lambdaManager = LambdaManager.getInstance();
-            lambdaManager.initOjects(getApplicationContext());
-            List<List<RestaurantMenuItem>> fullAndFilteredMenus =
-                    lambdaManager.getFullAndFilteredMenuForRestaurant(businessName);
-            plateNamesFM = fullAndFilteredMenus.get(0);
-            plateNamesPM = fullAndFilteredMenus.get(1);
-            for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
-                    Globals.getInstance().getRestaurantFullMenuMapFiltered().entrySet()) {
-                if (entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
-                    business = entry.getKey();
-                    break;
-                }
-            }
-        }
-        else {
+        if(!Globals.getInstance().isRunningInLambda()) {
+            business = null;
+            plateNamesFM = new ArrayList<>();
+            plateNamesPM = new ArrayList<>();
+
             // Get full menu ///////////////////////////////////
             for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
                     Globals.getInstance().getRestaurantFullMenuMap().entrySet()) {
@@ -150,5 +135,17 @@ public class BusinessDetailsActivity extends AppCompatActivity {
         }
         businessImageView.setImageDrawable(businessImage);
         //////////////////////////////////////////////////////////////////
+    }
+
+    public static void setPlateNamesPM(List<RestaurantMenuItem> plateNamesPM) {
+        BusinessDetailsActivity.plateNamesPM = plateNamesPM;
+    }
+
+    public static void setPlateNamesFM(List<RestaurantMenuItem> plateNamesFM) {
+        BusinessDetailsActivity.plateNamesFM = plateNamesFM;
+    }
+
+    public static void setBusiness(Business business) {
+        BusinessDetailsActivity.business = business;
     }
 }

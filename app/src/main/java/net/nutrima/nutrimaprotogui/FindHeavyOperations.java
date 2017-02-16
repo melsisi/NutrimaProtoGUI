@@ -55,13 +55,10 @@ public class FindHeavyOperations implements LocationListener {
         if(Globals.getInstance().isRunningInLambda()) {
             LambdaManager lambdaManager = LambdaManager.getInstance();
             lambdaManager.initObjects(getApplicationContext());
-            lambdaManager.getTopThreeMenuItemsAroundMeAsync(new LambdaRequest("food",
+            lambdaManager.getTopThreeMenuItemsAroundMeAsync("food",
                     mLastLocation.getLongitude(),
                     mLastLocation.getLatitude(),
-                    city,
-                    Globals.getInstance().getUserProfile(),
-                    (Globals.getInstance().getCurrentMetrics() == null ?
-                            new CurrentMetrics() : Globals.getInstance().getCurrentMetrics())));
+                    city);
         }
         else {
             Yelp.getYelp(activity.getBaseContext());

@@ -11,6 +11,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.internal.RestUtils;
 
 import net.nutrima.aws.RestaurantMenuItem;
+import net.nutrima.engine.CurrentMetrics;
 import net.nutrima.nutrimaprotogui.fragments.MapFragment;
 
 import java.io.ByteArrayInputStream;
@@ -55,7 +56,10 @@ public class LambdaManager {
         myInterface = factory.build(LambdaInterface.class);
     }
 
-    public void getTopThreeMenuItemsAroundMeAsync(LambdaRequest input) {
+    public void getTopThreeMenuItemsAroundMeAsync(String term,
+                                                  double longitude,
+                                                  double latitude,
+                                                  String city) {
         new AsyncTask<LambdaRequest, Void, RestaurantMenuItem[]>() {
             @Override
             protected RestaurantMenuItem[] doInBackground(LambdaRequest... params) {
@@ -75,7 +79,13 @@ public class LambdaManager {
                 Globals.setRestaurantFullMenuMapFiltered(reconstructMapFromList(result));
                 MapFragment.awsReadyCallback();
             }
-        }.execute(input);
+        }.execute(new LambdaRequest(term,
+                longitude,
+                latitude,
+                city,
+                Globals.getInstance().getUserProfile(),
+                (Globals.getInstance().getCurrentMetrics() == null ?
+                        new CurrentMetrics() : Globals.getInstance().getCurrentMetrics())));
     }
 
     public interface MyCallbackInterface {
@@ -86,9 +96,9 @@ public class LambdaManager {
     public List<List<RestaurantMenuItem>> getFullAndFilteredMenuForRestaurant(String restaurantName,
                                                                               final MyCallbackInterface callbackIf) {
         try {
-            LambdaRespMenues tempResults = new AsyncTask<String, Void, LambdaRespMenues>() {
+            LambdaRespMenues tempResults = new AsyncTask<LambdaRequest2, Void, LambdaRespMenues>() {
                 @Override
-                protected LambdaRespMenues doInBackground(String... params) {
+                protected LambdaRespMenues doInBackground(LambdaRequest2... params) {
                     try {
                         return myInterface.GetFullAndFilteredMenuForRestaurant(params[0]);
                     } catch (LambdaFunctionException lfe) {
@@ -103,7 +113,10 @@ public class LambdaManager {
                     }
                     callbackIf.onDownloadFinished(result);
                 }
-            }.execute(restaurantName).get();
+            }.execute(new LambdaRequest2(restaurantName,
+                    Globals.getInstance().getUserProfile(),
+                    (Globals.getInstance().getCurrentMetrics() == null ?
+                            new CurrentMetrics() : Globals.getInstance().getCurrentMetrics()))).get();
 
             ArrayList<RestaurantMenuItem> tempFullList =
                     new ArrayList<>(Arrays.asList(tempResults.getFullMenuList()));

@@ -18,5 +18,5 @@ public interface LambdaInterface {
     RestaurantMenuItem[] HelloFunction(LambdaRequest request);
 
     @LambdaFunction
-    LambdaRespMenues GetFullAndFilteredMenuForRestaurant(String input);
+    LambdaRespMenues GetFullAndFilteredMenuForRestaurant(LambdaRequest2 input);
 }

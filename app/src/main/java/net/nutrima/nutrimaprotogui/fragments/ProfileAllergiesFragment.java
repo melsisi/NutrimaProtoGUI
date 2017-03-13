@@ -17,6 +17,8 @@ import net.nutrima.engine.UserProfile;
 import net.nutrima.nutrimaprotogui.Globals;
 import net.nutrima.nutrimaprotogui.R;
 
+import static android.view.View.VISIBLE;
+
 
 public class ProfileAllergiesFragment extends Fragment {
 
@@ -53,7 +55,10 @@ public class ProfileAllergiesFragment extends Fragment {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                otherAllergiesEditText.setEnabled(isChecked);
+                if(isChecked)
+                    otherAllergiesEditText.setVisibility(VISIBLE);
+                else
+                    otherAllergiesEditText.setVisibility(View.INVISIBLE);
             }
         });
     }

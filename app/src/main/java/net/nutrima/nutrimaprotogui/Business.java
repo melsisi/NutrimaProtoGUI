@@ -1,9 +1,11 @@
 package net.nutrima.nutrimaprotogui;
 
+import java.io.Serializable;
+
 /**
  * Created by melsisi on 9/10/2016.
  */
-public class Business {
+public class Business implements Serializable{
     private String name;
     private LatLng coordinates;
     private String phone;

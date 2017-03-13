@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/other_illness_editText"
                 android:hint="other illnesses"
-                android:enabled="false"/>
+                android:visibility="invisible"/>
         </LinearLayout>
 
         <RelativeLayout

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.lambdainvoker.LambdaFunctionException;
 import com.amazonaws.mobileconnectors.lambdainvoker.LambdaInvokerFactory;
@@ -15,14 +16,18 @@ import net.nutrima.engine.CurrentMetrics;
 import net.nutrima.nutrimaprotogui.fragments.MapFragment;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 /**
  * Created by melsisi on 2/8/2017.
@@ -52,7 +57,9 @@ public class LambdaManager {
     public void initObjects(Context context) {
         cognitoProvider = new CognitoCachingCredentialsProvider(
                 context, "us-west-2:d8906892-52a9-45c2-aa66-10fc5e19af64", Regions.US_WEST_2);
-        factory = new LambdaInvokerFactory(context, Regions.US_WEST_2, cognitoProvider);
+        ClientConfiguration clientConfig = new ClientConfiguration();
+        clientConfig.setSocketTimeout(100000);
+        factory = new LambdaInvokerFactory(context, Regions.US_WEST_2, cognitoProvider, clientConfig);
         myInterface = factory.build(LambdaInterface.class);
     }
 
@@ -60,9 +67,9 @@ public class LambdaManager {
                                                   double longitude,
                                                   double latitude,
                                                   String city) {
-        new AsyncTask<LambdaRequest, Void, RestaurantMenuItem[]>() {
+        new AsyncTask<LambdaRequest, Void, byte[]>() {
             @Override
-            protected RestaurantMenuItem[] doInBackground(LambdaRequest... params) {
+            protected byte[] doInBackground(LambdaRequest... params) {
                 try {
                     return myInterface.HelloFunction(params[0]);
                 } catch (LambdaFunctionException lfe) {
@@ -72,11 +79,24 @@ public class LambdaManager {
             }
 
             @Override
-            protected void onPostExecute(RestaurantMenuItem[] result) {
+            protected void onPostExecute(byte[] result) {
                 if (result == null) {
                     return;
                 }
-                Globals.setRestaurantFullMenuMapFiltered(reconstructMapFromList(result));
+                LambdaRespAll outPutDeserialized = null;
+                try {
+                    byte[] outputDecompressed = decompress(result);
+                    outPutDeserialized = Serializer.deserialize(ByteBuffer.wrap(outputDecompressed));
+                } catch (IOException | DataFormatException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                // TODO: Add the rest
+                Globals.setRestaurantFullMenuMapFiltered(outPutDeserialized.getRestaurantFullMenuMapFiltered());
+                Globals.getInstance().setRestaurantFullMenuMap(outPutDeserialized.getRestaurantFullMenuMap());
                 MapFragment.awsReadyCallback();
             }
         }.execute(new LambdaRequest(term,
@@ -150,5 +170,22 @@ public class LambdaManager {
         }
 
         return toReturn;
+    }
+
+    // TODO: move to helpers
+    public static byte[] decompress(byte[] data) throws IOException, DataFormatException {
+        Inflater inflater = new Inflater();
+        inflater.setInput(data);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+        while (!inflater.finished()) {
+            int count = inflater.inflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        outputStream.close();
+        byte[] output = outputStream.toByteArray();
+        System.out.println("Original: " + data.length / 1024 + " Kb");
+        System.out.println("Decompressed: " + output.length / 1024 + " Kb");
+        return output;
     }
 }

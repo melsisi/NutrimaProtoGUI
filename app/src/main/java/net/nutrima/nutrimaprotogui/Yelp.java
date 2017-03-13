@@ -143,7 +143,7 @@ public class Yelp {
                     Business toAdd = new Business();
                     toAdd.setName(name);
                     toAdd.setPhone(phone);
-                    toAdd.setCoordinates(new LatLng(longitude, latitude));
+                    toAdd.setCoordinates(new LatLng(latitude, longitude));
                     toAdd.setImageUrl(imageUrl);
                     toAdd.setRatingImageUrl(ratingImageUrl);
 

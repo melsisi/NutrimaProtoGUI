@@ -9,13 +9,14 @@ import net.nutrima.engine.FoodType;
 import net.nutrima.nutrimaprotogui.Business;
 import net.nutrima.engine.Kitchen;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by melsisi on 4/26/2016.
  */
 @DynamoDBTable(tableName = "RestaurantsUS2")
-public class RestaurantMenuItem {
+public class RestaurantMenuItem implements Serializable {
 
     private String Restaurant;
     private String FoodCategory;

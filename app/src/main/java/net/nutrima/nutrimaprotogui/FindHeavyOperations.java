@@ -35,7 +35,7 @@ public class FindHeavyOperations implements LocationListener {
     private static FindHeavyOperations ourInstance;
     private static ArrayList<Business> businessesToMap;
     private final int MY_PERMISSIONS_REQUEST = 0;
-    private static Location mLastLocation;
+    public static Location mLastLocation;
     private static String city;
     private static boolean yelpBusinessesReady = false;
 

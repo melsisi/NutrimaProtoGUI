@@ -58,6 +58,54 @@ public class Globals {
         fbResponse = null;
     }
 
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredDessert() {
+        return plateNamesPMFilteredDessert;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredTopping() {
+        return plateNamesPMFilteredTopping;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredSoup() {
+        return plateNamesPMFilteredSoup;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredPasta() {
+        return plateNamesPMFilteredPasta;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredFastFood() {
+        return plateNamesPMFilteredFastFood;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredSandwitch() {
+        return plateNamesPMFilteredSandwitch;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredSalad() {
+        return plateNamesPMFilteredSalad;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredBaked() {
+        return plateNamesPMFilteredBaked;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredPizza() {
+        return plateNamesPMFilteredPizza;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredBeverage() {
+        return plateNamesPMFilteredBeverage;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredAppetizer() {
+        return plateNamesPMFilteredAppetizer;
+    }
+
+    public ArrayList<RestaurantMenuItem> getPlateNamesPMFilteredEntree() {
+        return plateNamesPMFilteredEntree;
+    }
+
     public List<NutritionUSDAEntry> getUSDATable() {
         return USDATable;
     }

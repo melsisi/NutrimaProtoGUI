@@ -53,7 +53,10 @@ public class ProfileIllnessesFragment extends Fragment {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                otherIllnessesEditText.setEnabled(isChecked);
+                if(isChecked)
+                    otherIllnessesEditText.setVisibility(View.VISIBLE);
+                else
+                    otherIllnessesEditText.setVisibility(View.INVISIBLE);
             }
         });
     }

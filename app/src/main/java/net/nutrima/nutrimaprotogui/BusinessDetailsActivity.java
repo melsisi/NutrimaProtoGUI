@@ -57,7 +57,7 @@ public class BusinessDetailsActivity extends AppCompatActivity {
         // Creating menu listview ////////////////////////////////////////
         final ListView menuListView = (ListView) findViewById(R.id.menu_listview);
 
-        if(!Globals.getInstance().isRunningInLambda()) {
+        //if(!Globals.getInstance().isRunningInLambda()) {
             business = null;
             plateNamesFM = new ArrayList<>();
             plateNamesPM = new ArrayList<>();
@@ -75,7 +75,7 @@ public class BusinessDetailsActivity extends AppCompatActivity {
 
             // Get personalized menu ///////////////////////////////////
             for (Map.Entry<Business, List<RestaurantMenuItem>> entry :
-                    Globals.getInstance().getRestaurantPersonalizedMenuMap().entrySet()) {
+                    Globals.getRestaurantFullMenuMapFiltered().entrySet()) {
                 if (entry.getKey().getName().toLowerCase().equals(businessName.toLowerCase())) {
                     plateNamesPM.addAll(entry.getValue());
                     break;
@@ -83,7 +83,7 @@ public class BusinessDetailsActivity extends AppCompatActivity {
             }
             ///////////////////////////////////////////////
 
-        }
+        //}
         plateNamesToDisplay = new ArrayList<>();
 
         plateNamesToDisplay.addAll(plateNamesPM);
@@ -115,7 +115,8 @@ public class BusinessDetailsActivity extends AppCompatActivity {
         ImageView ratingImageView = (ImageView) findViewById(R.id.rating_imageview);
         Drawable ratingImage = null;
         try {
-            ratingImage = new UrlAsyncTask().execute(business.getRatingImageUrl()).get();
+            if(business.getRatingImageUrl() != null)
+                ratingImage = new UrlAsyncTask().execute(business.getRatingImageUrl()).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -138,7 +139,7 @@ public class BusinessDetailsActivity extends AppCompatActivity {
         //////////////////////////////////////////////////////////////////
     }
 
-    public static void setPlateNamesPM(List<RestaurantMenuItem> plateNamesPM) {
+    /*public static void setPlateNamesPM(List<RestaurantMenuItem> plateNamesPM) {
         BusinessDetailsActivity.plateNamesPM = plateNamesPM;
     }
 
@@ -148,7 +149,7 @@ public class BusinessDetailsActivity extends AppCompatActivity {
 
     public static void setBusiness(Business business) {
         BusinessDetailsActivity.business = business;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

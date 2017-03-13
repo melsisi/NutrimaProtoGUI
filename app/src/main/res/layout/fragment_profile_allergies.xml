@@ -119,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/other_allergy_editText"
                 android:hint="other allergies"
-                android:enabled="false"/>
+                android:visibility="invisible"/>
         </LinearLayout>
 
         <RelativeLayout

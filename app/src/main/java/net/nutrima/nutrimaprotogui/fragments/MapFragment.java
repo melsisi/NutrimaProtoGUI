@@ -154,6 +154,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        mGoogleApiClient.connect();
         switch (requestCode) {
             case REQUEST_LOCATION:
                 switch (resultCode) {
@@ -167,9 +168,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(FindHeavyOperations.getInstance().getmLastLocation().getLatitude(),
                                             FindHeavyOperations.getInstance().getmLastLocation().getLongitude()), 13.0f));
-                        }
-                        else {
-                            mGoogleApiClient.connect();
                         }
                         break;
                     case Activity.RESULT_CANCELED:
@@ -228,8 +226,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 mMap.addMarker(new MarkerOptions()
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_logo))
                         .title(entry.getKey().getName())
-                        .position(new LatLng(entry.getKey().getCoordinates().getLongitude(),
-                                entry.getKey().getCoordinates().getLatitude())));
+                        .position(new LatLng(entry.getKey().getCoordinates().getLatitude(),
+                                entry.getKey().getCoordinates().getLongitude())));
             }
         }
         else {
@@ -359,7 +357,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 String message = marker.getTitle();
                 intent.putExtra("BUSINESS_NAME", message);
 
-                LambdaManager lambdaManager = LambdaManager.getInstance();
+                /*LambdaManager lambdaManager = LambdaManager.getInstance();
                 lambdaManager.initObjects(getApplicationContext());
                 List<List<RestaurantMenuItem>> fullAndFilteredMenus =
                         lambdaManager.getFullAndFilteredMenuForRestaurant(message, new LambdaManager.MyCallbackInterface() {
@@ -377,7 +375,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                         BusinessDetailsActivity.setBusiness(entry.getKey());
                         break;
                     }
-                }
+                }*/
+                startActivity(intent);
             }
         });
         markerClicked = false;

@@ -15,7 +15,7 @@ import java.util.Map;
 public interface LambdaInterface {
 
     @LambdaFunction
-    RestaurantMenuItem[] HelloFunction(LambdaRequest request);
+    byte[] HelloFunction(LambdaRequest request);
 
     @LambdaFunction
     LambdaRespMenues GetFullAndFilteredMenuForRestaurant(LambdaRequest2 input);
